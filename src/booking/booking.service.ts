@@ -46,10 +46,6 @@ export class BookingService {
 	) {}
 
 	async create(dto: CreateBookingDto) {
-		console.log({
-			dto,
-		});
-
 		// find user by id
 		try {
 			await this.userModel.findById(dto.userId);
@@ -128,8 +124,25 @@ export class BookingService {
 		// return this.prisma.booking.findMany();
 	}
 
-	findOne(id: string) {
-		return `This action returns a #${id} booking`;
+	async findOne(id: string) {
+		let bookFind;
+		try {
+			bookFind = await this.bookingModel.findById(
+				id,
+			);
+		} catch (error) {
+			throw new HttpException(
+				ERROR_BOOKING_NOT_FOUND,
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+		if (!bookFind) {
+			throw new HttpException(
+				ERROR_BOOKING_NOT_FOUND,
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+		return bookFind;
 	}
 
 	update(id: string, dto: UpdateBookingDto) {
@@ -140,38 +153,38 @@ export class BookingService {
 		id: string,
 		dto: UpdateBookingDto,
 	) {
-		return `This action set status CANCELLED a booking by #id ${id}`;
-
-		// const { status } = dto;
-		// if (status !== BookingStatusesEnum.CANCELLED)
+		if (
+			!dto?.status ||
+			!Object.values(
+				BookingStatusesEnum,
+			).includes(+dto.status)
+		) {
+			throw new HttpException(
+				ERROR_BOOKING_BAD_REQUEST,
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+		// if (
+		// 	(status && +status) !==
+		// 	BookingStatusesEnum.CANCELLED
+		// )
 		// 	throw new HttpException(
 		// 		ERROR_BOOKING_BAD_REQUEST,
 		// 		HttpStatus.CONFLICT,
 		// 	);
-		// try {
-		// 	return await this.prisma.booking.update({
-		// 		where: {
-		// 			id,
-		// 		},
-		// 		data: {
-		// 			status,
-		// 		},
-		// 	});
-		// } catch (error) {
-		// 	if (
-		// 		error instanceof
-		// 		PrismaClientKnownRequestError
-		// 	) {
-		// 		// booking not found
-		// 		if (error?.code === 'P2025') {
-		// 			throw new HttpException(
-		// 				ERROR_BOOKING_NOT_FOUND,
-		// 				HttpStatus.NOT_FOUND,
-		// 			);
-		// 		}
-		// 	}
-		// 	throw error;
-		// }
+
+		let findBook;
+		try {
+			findBook = await this.findOne(id);
+		} catch (error) {
+			throw new HttpException(
+				ERROR_BOOKING_NOT_FOUND,
+				HttpStatus.NOT_FOUND,
+			);
+			throw error;
+		}
+		findBook.status = dto.status;
+		return findBook.save();
 	}
 
 	remove(id: string) {
