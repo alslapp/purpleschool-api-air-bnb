@@ -1,23 +1,11 @@
-import {
-	Controller,
-	Get,
-	Post,
-	Body,
-	Patch,
-	Param,
-	Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
-import {
-	CreateUserDto,
-	UpdateUserDto,
-} from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { MongoIdValidationPipe } from '../pipes';
 
 @Controller('user')
 export class UserController {
-	constructor(
-		private readonly userService: UserService,
-	) {}
+	constructor(private readonly userService: UserService) {}
 
 	@Post()
 	create(@Body() dto: CreateUserDto) {
@@ -30,20 +18,17 @@ export class UserController {
 	}
 
 	@Get(':id')
-	findOne(@Param('id') id: string) {
+	findOne(@Param('id', MongoIdValidationPipe) id: string) {
 		return this.userService.findOne(id);
 	}
 
 	@Patch(':id')
-	update(
-		@Param('id') id: string,
-		@Body() dto: UpdateUserDto,
-	) {
+	update(@Param('id', MongoIdValidationPipe) id: string, @Body() dto: UpdateUserDto) {
 		return this.userService.update(id, dto);
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
+	remove(@Param('id', MongoIdValidationPipe) id: string) {
 		return this.userService.remove(id);
 	}
 }

@@ -15,7 +15,7 @@ module.exports = {
 				'semi': true,
 				'trailingComma': 'all',
 				'bracketSpacing': true,
-				'printWidth': 50,
+				'printWidth': 100,
 				'endOfLine': 'auto',
 			},
 		],

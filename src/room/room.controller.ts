@@ -1,23 +1,11 @@
-import {
-	Controller,
-	Get,
-	Post,
-	Body,
-	Patch,
-	Param,
-	Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RoomService } from './room.service';
-import {
-	CreateRoomDto,
-	UpdateRoomDto,
-} from './dto';
+import { CreateRoomDto, UpdateRoomDto } from './dto';
+import { MongoIdValidationPipe } from '../pipes';
 
 @Controller('room')
 export class RoomController {
-	constructor(
-		private readonly roomService: RoomService,
-	) {}
+	constructor(private readonly roomService: RoomService) {}
 
 	@Post()
 	create(@Body() dto: CreateRoomDto) {
@@ -30,20 +18,17 @@ export class RoomController {
 	}
 
 	@Get(':id')
-	findOne(@Param('id') id: string) {
+	findOne(@Param('id', MongoIdValidationPipe) id: string) {
 		return this.roomService.findOne(id);
 	}
 
 	@Patch(':id')
-	update(
-		@Param('id') id: string,
-		@Body() dto: UpdateRoomDto,
-	) {
+	update(@Param('id', MongoIdValidationPipe) id: string, @Body() dto: UpdateRoomDto) {
 		return this.roomService.update(id, dto);
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
+	remove(@Param('id', MongoIdValidationPipe) id: string) {
 		return this.roomService.remove(id);
 	}
 }

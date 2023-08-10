@@ -1,23 +1,11 @@
-import {
-	Controller,
-	Get,
-	Post,
-	Body,
-	Patch,
-	Param,
-	Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { BookingService } from './booking.service';
-import {
-	CreateBookingDto,
-	UpdateBookingDto,
-} from './dto';
+import { CreateBookingDto, UpdateBookingDto } from './dto';
+import { MongoIdValidationPipe } from '../pipes';
 
 @Controller('booking')
 export class BookingController {
-	constructor(
-		private readonly bookingService: BookingService,
-	) {}
+	constructor(private readonly bookingService: BookingService) {}
 
 	@Post()
 	create(@Body() dto: CreateBookingDto) {
@@ -30,31 +18,23 @@ export class BookingController {
 	}
 
 	@Get(':id')
-	findOne(@Param('id') id: string) {
+	findOne(
+		@Param('id', MongoIdValidationPipe)
+		id: string,
+	) {
 		return this.bookingService.findOne(id);
 	}
 
-	@Patch(':id')
-	update(
-		@Param('id') id: string,
-		@Body() dto: UpdateBookingDto,
-	) {
-		return this.bookingService.update(id, dto);
-	}
-
-	@Patch('status/:id')
-	cancelBooking(
-		@Param('id') id: string,
-		@Body() dto: UpdateBookingDto,
-	) {
-		return this.bookingService.cancelBooking(
-			id,
-			dto,
-		);
+	@Post('cancel/:id')
+	cancelBook(@Param('id', MongoIdValidationPipe) id: string) {
+		return this.bookingService.cancelBook(id);
 	}
 
 	@Delete(':id')
-	remove(@Param('id') id: string) {
+	remove(
+		@Param('id', MongoIdValidationPipe)
+		id: string,
+	) {
 		return this.bookingService.remove(id);
 	}
 }

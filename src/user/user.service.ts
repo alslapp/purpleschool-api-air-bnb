@@ -1,41 +1,20 @@
-import {
-	HttpStatus,
-	HttpException,
-	Injectable,
-} from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-	CreateUserDto,
-	UpdateUserDto,
-} from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { User, UserDocument } from './models';
 import * as argon from 'argon2';
 
-import {
-	ERROR_USER_EXISTS,
-	ERROR_USER_NOT_FOUND,
-} from './user.constants';
-
+import { ERROR_USER_EXISTS, ERROR_USER_NOT_FOUND } from './user.constants';
 
 @Injectable()
 export class UserService {
-	constructor(
-		@InjectModel(User.name)
-		private userModel: Model<UserDocument>,
-	) {}
+	constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
 	async create(dto: CreateUserDto) {
-		const isUserExists =
-			(await this.userModel.count({
-				email: dto.email,
-			})) && true;
-
+		const isUserExists = (await this.userModel.count({ email: dto.email })) && true;
 		if (isUserExists) {
-			throw new HttpException(
-				ERROR_USER_EXISTS,
-				HttpStatus.BAD_REQUEST,
-			);
+			throw new HttpException(ERROR_USER_EXISTS, HttpStatus.BAD_REQUEST);
 		}
 
 		// get hash
@@ -54,23 +33,28 @@ export class UserService {
 	}
 
 	async findOne(id: string) {
-		let product;
 		try {
-			product = await this.userModel.findById(id);
+			const user = await this.userModel.findById(id);
+			if (!user) {
+				throw new Error();
+			}
+			return user;
 		} catch (error) {
-			throw new HttpException(
-				ERROR_USER_NOT_FOUND,
-				HttpStatus.NOT_FOUND,
-			);
+			throw new HttpException(ERROR_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
-		return product;
 	}
 
-	update(id: string, dto: UpdateUserDto) {
-		return `This action updates a #${id} user`;
+	async update(_id: string, dto: UpdateUserDto) {
+		try {
+			const user = await this.userModel.findOneAndUpdate({ _id }, { ...dto });
+			if (!user) throw new Error();
+			return this.findOne(_id);
+		} catch (error) {
+			throw new HttpException(ERROR_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+		}
 	}
 
-	remove(id: string) {
-		return `This action removes a #${id} user`;
+	remove(_id: string) {
+		return this.userModel.deleteOne({ _id });
 	}
 }

@@ -1,8 +1,4 @@
-import {
-	Prop,
-	Schema,
-	SchemaFactory,
-} from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
 export type RoomDocument = HydratedDocument<Room>;
@@ -32,5 +28,4 @@ export class Room {
 	price: number;
 }
 
-export const RoomSchema =
-	SchemaFactory.createForClass(Room);
+export const RoomSchema = SchemaFactory.createForClass(Room);

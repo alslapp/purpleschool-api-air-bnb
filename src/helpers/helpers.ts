@@ -1,15 +1,6 @@
-export const convertDateToUTC = (
-	timestamp: number,
-) => {
+export const convertDateToUTC = (timestamp: number) => {
 	const date = new Date(timestamp * 1000);
-	const dateUTC = new Date(
-		date.getUTCFullYear(),
-		date.getUTCMonth(),
-		date.getUTCDate(),
-		date.getUTCHours(),
-		date.getUTCMinutes(),
-		date.getUTCSeconds(),
-	);
+	const dateUTC = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 
 	dateUTC.setUTCHours(0);
 	dateUTC.setUTCMinutes(0);
