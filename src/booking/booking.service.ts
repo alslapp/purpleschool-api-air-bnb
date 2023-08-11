@@ -30,6 +30,12 @@ export class BookingService {
 			throw new HttpException(ERROR_BOOKING_USER_NOT_FOUNT, HttpStatus.BAD_REQUEST);
 		}
 
+		// check user exists
+		const userFind = await this.userModel.findById(dto.userId);
+		if (!userFind) {
+			throw new HttpException(ERROR_BOOKING_USER_NOT_FOUNT, HttpStatus.BAD_REQUEST);
+		}
+
 		// check room exists
 		const roomFind = await this.roomModel.findById(dto.roomId, 'price');
 		if (!roomFind) {
