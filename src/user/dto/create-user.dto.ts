@@ -1,11 +1,14 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-
-import { Exclude } from 'class-transformer';
+import {
+	ERROR_USER_VALIDATION_EMAIL,
+	ERROR_USER_VALIDATION_PASSWORD,
+	ERROR_USER_VALIDATION_PASSWORD_IS_NOT_STRING
+} from '../user.constants';
 
 export class CreateUserDto {
-	@IsEmail()
-	@IsString()
-	@IsNotEmpty()
+	@IsEmail({}, { message: ERROR_USER_VALIDATION_EMAIL })
+	@IsString({ message: ERROR_USER_VALIDATION_EMAIL })
+	@IsNotEmpty({ message: ERROR_USER_VALIDATION_EMAIL })
 	email: string;
 
 	@IsString()
@@ -16,7 +19,7 @@ export class CreateUserDto {
 	@IsOptional()
 	lastName?: string;
 
-	@IsString()
-	@IsNotEmpty()
+	@IsString({ message: ERROR_USER_VALIDATION_PASSWORD_IS_NOT_STRING })
+	@IsNotEmpty({ message: ERROR_USER_VALIDATION_PASSWORD })
 	password: string;
 }

@@ -11,3 +11,5 @@ export const ERROR_BOOKING_BAD_REQUEST = 'Неправильный запрос'
 export const ERROR_BOOKING_SKIPPED_DATE = 'Не указана дата бронирования';
 
 export const ERROR_BOOKING_DATE_PAST = 'Дата прошла';
+
+export const ERROR_BOOKING_DATE_ERROR = 'Задана неверная дата';

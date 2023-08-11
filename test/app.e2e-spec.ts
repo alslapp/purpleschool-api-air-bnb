@@ -1,18 +1,30 @@
-// т.е. при создании брони нужны id юзера и комнаты, соотв. все тесты разместил в одном файле.
+// т.к. при создании брони нужны id юзера и комнаты, соотв. все тесты разместил в одном файле.
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Logger } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { Types, disconnect } from 'mongoose';
 import { CreateUserDto, UpdateUserDto } from '../src/user/dto';
 import { CreateRoomDto, UpdateRoomDto } from '../src/room/dto';
-import { ERROR_USER_EXISTS } from '../src/user/user.constants';
-import { ERROR_ROOM_EXISTS, ERROR_ROOM_NOT_FOUND } from '../src/room/room.constants';
 import {
+	ERROR_USER_EXISTS,
+	ERROR_USER_VALIDATION_EMAIL,
+	ERROR_USER_VALIDATION_PASSWORD,
+	ERROR_USER_VALIDATION_PASSWORD_IS_NOT_STRING,
+} from '../src/user/user.constants';
+import {
+	ERROR_ROOM_AREA_IS_STRING,
+	ERROR_ROOM_AREA_TOO_LESS,
+	ERROR_ROOM_EXISTS,
+	ERROR_ROOM_NOT_FOUND,
+} from '../src/room/room.constants';
+import {
+	ERROR_BOOKING_DATE_ERROR,
 	ERROR_BOOKING_DATE_PAST,
 	ERROR_BOOKING_EXISTS,
 	ERROR_BOOKING_USER_NOT_FOUNT,
 } from '../src/booking/booking.constants';
+import { mainConfig } from '../src/main.config';
 
 const testUser: CreateUserDto = {
 	email: 'test.e2e-1@mail.ru',
@@ -59,9 +71,12 @@ describe('AppController (e2e)', () => {
 		}).compile();
 
 		app = moduleFixture.createNestApplication();
+		mainConfig(app);
 		await app.init();
+		app.useLogger(new Logger());
 	});
 
+	// ####################################################################################
 	// STEP 1: User
 	it('/user (POST) - success', () => {
 		return request(app.getHttpServer())
@@ -71,6 +86,35 @@ describe('AppController (e2e)', () => {
 			.then(({ body }: request.Response) => {
 				userCreatedId = body._id;
 				expect(userCreatedId).toBeDefined();
+			});
+	});
+
+	// передан неправильный форма емайл
+	it('/user (POST) - success', () => {
+		return request(app.getHttpServer())
+			.post('/user')
+			.send({
+				...testUser,
+				email: 'not_email_format',
+			})
+			.expect(400)
+			.then(({ body }: request.Response) => {
+				const messError = body?.message.includes(ERROR_USER_VALIDATION_EMAIL);
+				expect(messError).toBeTruthy();
+			});
+	});
+
+	// не переданы емайл и/или пароль
+	it('/user (POST) - success', () => {
+		return request(app.getHttpServer())
+			.post('/user')
+			.expect(400)
+			.then(({ body }: request.Response) => {
+				const messError =
+					body?.message.includes(ERROR_USER_VALIDATION_EMAIL) ||
+					body?.message.includes(ERROR_USER_VALIDATION_PASSWORD) ||
+					body?.message.includes(ERROR_USER_VALIDATION_PASSWORD_IS_NOT_STRING);
+				expect(messError).toBeTruthy();
 			});
 	});
 
@@ -109,6 +153,7 @@ describe('AppController (e2e)', () => {
 			});
 	});
 
+	// ####################################################################################
 	// STEP 2: Room
 	it('/room (POST) - success', () => {
 		return request(app.getHttpServer())
@@ -119,6 +164,51 @@ describe('AppController (e2e)', () => {
 				roomCreatedId = body._id;
 				expect(roomCreatedId).toBeDefined();
 			});
+	});
+
+	// передаем площадь менее 1
+	it('/room (POST) - success', () => {
+		return request(app.getHttpServer())
+			.post('/room')
+			.send({
+				...testRoom,
+				area: 0.6,
+			})
+			.expect(400, {
+				message: [ERROR_ROOM_AREA_TOO_LESS],
+				error: 'Bad Request',
+				statusCode: 400,
+			});
+	});
+
+	// передаем площадь в виде строки
+	it('/room (POST) - success', () => {
+		return request(app.getHttpServer())
+			.post('/room')
+			.send({
+				...testRoom,
+				area: '15,6',
+			})
+			.expect(400, {
+				message: [ERROR_ROOM_AREA_IS_STRING, ERROR_ROOM_AREA_TOO_LESS],
+				error: 'Bad Request',
+				statusCode: 400,
+			});
+	});
+
+	// передаем площадь в виде строки
+	it('/room (POST) - success', () => {
+		const weakTestRoom: UpdateRoomDto = { ...testRoom };
+
+		if (weakTestRoom?.area) delete weakTestRoom.area;
+		if (weakTestRoom?.price) delete weakTestRoom.price;
+		if (weakTestRoom?.title) delete weakTestRoom.title;
+		if (weakTestRoom?.type) delete weakTestRoom.type;
+
+		return request(app.getHttpServer())
+			.post('/room')
+			.send(weakTestRoom)
+			.expect(400);
 	});
 
 	it('/room (POST) - fail', () => {
@@ -156,6 +246,7 @@ describe('AppController (e2e)', () => {
 			});
 	});
 
+	// ####################################################################################
 	// STEP 3: Booking
 	// создаем бронь
 	it('/booking (POST) - success', () => {
@@ -185,6 +276,21 @@ describe('AppController (e2e)', () => {
 			.expect(400, {
 				statusCode: 400,
 				message: ERROR_BOOKING_EXISTS,
+			});
+	});
+
+	// создаем бронь без даты
+	it('/booking (POST) - fail', () => {
+		return request(app.getHttpServer())
+			.post('/booking')
+			.send({
+				roomId: roomCreatedId,
+				userId: userCreatedId,
+			})
+			.expect(400, {
+				message: [ERROR_BOOKING_DATE_ERROR],
+				error: 'Bad Request',
+				statusCode: 400,
 			});
 	});
 
@@ -253,6 +359,7 @@ describe('AppController (e2e)', () => {
 			});
 	});
 
+	// ####################################################################################
 	// STEP END: remove test data from db
 	// удаление комнаты
 	it('/room/:id (DELETE) - success', () => {
