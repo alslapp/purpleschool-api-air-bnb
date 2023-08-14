@@ -1,12 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { BookingStatusesEnum, CreateBookingDto } from './dto';
+import { BookingStatusesEnum, CreateBookingDto, UpdateBookingDto } from './dto';
 import { convertDateToUTC } from '../helpers/helpers';
-import {
-	ERROR_BOOKING_DATE_PAST,
-	ERROR_BOOKING_EXISTS,
-	ERROR_BOOKING_NOT_FOUND,
-	ERROR_BOOKING_USER_NOT_FOUNT,
-} from './booking.constants';
+import { ERROR_BOOKING_DATE_PAST, ERROR_BOOKING_EXISTS } from './booking.constants';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Booking, BookingDocument } from './models';
@@ -22,20 +17,7 @@ export class BookingService {
 		@InjectModel(Room.name) private roomModel: Model<RoomDocument>,
 	) {}
 
-	async create(dto: CreateBookingDto) {
-		// find user by id
-		try {
-			await this.userModel.findById(dto.userId);
-		} catch (error) {
-			throw new HttpException(ERROR_BOOKING_USER_NOT_FOUNT, HttpStatus.BAD_REQUEST);
-		}
-
-		// check user exists
-		const userFind = await this.userModel.findById(dto.userId);
-		if (!userFind) {
-			throw new HttpException(ERROR_BOOKING_USER_NOT_FOUNT, HttpStatus.BAD_REQUEST);
-		}
-
+	async create(userId: string, dto: CreateBookingDto) {
 		// check room exists
 		const roomFind = await this.roomModel.findById(dto.roomId, 'price');
 		if (!roomFind) {
@@ -65,6 +47,7 @@ export class BookingService {
 			...dto,
 			date: bookingDate,
 			price: roomFind.price,
+			userId,
 		});
 		return bookNew.save();
 	}
@@ -73,25 +56,13 @@ export class BookingService {
 		return this.bookingModel.find();
 	}
 
-	async findOne(id: string) {
-		const bookFind = await this.bookingModel.findById(id);
-		if (!bookFind) {
-			throw new HttpException(ERROR_BOOKING_NOT_FOUND, HttpStatus.BAD_REQUEST);
-		}
-		return bookFind;
+	findById(_id: string) {
+		return this.bookingModel.findOne({ _id });
 	}
 
-	async cancelBook(id: string) {
-		// проверяем, что статус, который пришёл с клиента, соотв. BookingStatusesEnum
-		// if (!dto?.status || !Object.values(BookingStatusesEnum).includes(+dto.status)) {
-		// 	throw new HttpException(ERROR_BOOKING_BAD_REQUEST, HttpStatus.BAD_REQUEST);
-		// }
-		const findBook = await this.findOne(id);
-		if (!findBook) {
-			throw new HttpException(ERROR_BOOKING_NOT_FOUND, HttpStatus.NOT_FOUND);
-		}
-		findBook.status = BookingStatusesEnum.CANCELLED;
-		return findBook.save();
+	async updateById(_id: string, data: UpdateBookingDto) {
+		await this.bookingModel.findOneAndUpdate({ _id }, data);
+		return this.findById(_id);
 	}
 
 	remove(_id: string) {

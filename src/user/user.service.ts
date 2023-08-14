@@ -1,60 +1,85 @@
-import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { UpdateUserDto } from './dto';
 import { User, UserDocument } from './models';
 import * as argon from 'argon2';
-
-import { ERROR_USER_EXISTS, ERROR_USER_NOT_FOUND } from './user.constants';
+import {Roles} from "../decorators";
+import {Role} from "./dto/user-roles.enum";
 
 @Injectable()
 export class UserService {
 	constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-	async create(dto: CreateUserDto) {
-		const isUserExists = (await this.userModel.count({ email: dto.email })) && true;
-		if (isUserExists) {
-			throw new HttpException(ERROR_USER_EXISTS, HttpStatus.BAD_REQUEST);
-		}
-
+	async createUser(email: string, password: string) {
 		// get hash
-		const hash = await argon.hash(dto.password);
+		const hash = await argon.hash(password);
 
 		// save user in the db
 		const newUser = new this.userModel({
-			...dto,
+			email,
 			hash,
 		});
-		return newUser.save();
+		return this.sanitizeUser(await newUser.save());
 	}
+
+
+
+
+	async createAdmin(email: string, password: string) {
+		// get hash
+		const hash = await argon.hash(password);
+
+		// save user in the db
+		const newUser = new this.userModel({
+			email,
+			hash,
+			roles: [Role.ADMIN],
+		});
+		return this.sanitizeUser(await newUser.save());
+	}
+
+
+
+
+
+
+
+
+
 
 	async findAll() {
-		return this.userModel.find();
+		const users = await this.userModel.find();
+		return users.map(this.sanitizeUser);
 	}
 
-	async findOne(id: string) {
-		try {
-			const user = await this.userModel.findById(id);
-			if (!user) {
-				throw new Error();
-			}
-			return user;
-		} catch (error) {
-			throw new HttpException(ERROR_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-		}
+	async findById(id: string) {
+		const user = await this.userModel.findById(id);
+		return this.sanitizeUser(user);
 	}
 
-	async update(_id: string, dto: UpdateUserDto) {
-		try {
-			const user = await this.userModel.findOneAndUpdate({ _id }, { ...dto });
-			if (!user) throw new Error();
-			return this.findOne(_id);
-		} catch (error) {
-			throw new HttpException(ERROR_USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-		}
+	async update(_id: string, data: UpdateUserDto) {
+		await this.userModel.findOneAndUpdate({ _id }, data);
+		return this.findById(_id);
 	}
 
 	remove(_id: string) {
 		return this.userModel.deleteOne({ _id });
+	}
+
+	async findUser(email: string) {
+		const user = await this.userModel.findOne({ email });
+		return this.sanitizeUser(user);
+	}
+
+	async findUserRaw(email: string) {
+		return this.userModel.findOne({ email });
+	}
+
+	sanitizeUser(user: UserDocument | null) {
+		if (!user) return null;
+		const sanitized: Partial<UserDocument> = user.toObject();
+		delete sanitized.hash;
+		return sanitized;
 	}
 }

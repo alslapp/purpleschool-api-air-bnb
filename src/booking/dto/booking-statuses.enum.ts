@@ -1,4 +1,4 @@
 export enum BookingStatusesEnum {
-	NEW,
-	CANCELLED,
+	NEW = 'new',
+	CANCELLED = 'cancelled',
 }

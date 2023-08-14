@@ -13,3 +13,7 @@ export const ERROR_BOOKING_SKIPPED_DATE = 'Не указана дата брон
 export const ERROR_BOOKING_DATE_PAST = 'Дата прошла';
 
 export const ERROR_BOOKING_DATE_ERROR = 'Задана неверная дата';
+
+export const ERROR_BOOKING_CANCELLED_YET = 'Бронь уже отменена';
+
+export const ERROR_BOOKING_CANCELLED_FORBIDDEN = 'Недостаточно прав пользователя для отмены данной брони';

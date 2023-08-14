@@ -3,14 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type RoomDocument = HydratedDocument<Room>;
 
-@Schema({
-	timestamps: true,
-	toJSON: {
-		transform(doc, ret) {
-			delete ret.__v;
-		},
-	},
-})
+@Schema()
 export class Room {
 	@Prop({ required: true, unique: true })
 	number: number;

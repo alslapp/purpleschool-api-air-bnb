@@ -15,7 +15,4 @@ export class CreateBookingDto {
 
 	@IsString()
 	roomId: string;
-
-	@IsString()
-	userId: string;
 }
