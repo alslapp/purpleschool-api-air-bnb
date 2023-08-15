@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BookingModule } from './booking/booking.module';
 import { RoomModule } from './room/room.module';
@@ -9,7 +9,13 @@ import { AuthModule } from './auth/auth.module';
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
-		MongooseModule.forRoot('mongodb://localhost:27117/test'),
+		MongooseModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: async (configService: ConfigService) => ({
+				uri: configService.get<string>('MONGODB_URI'),
+			}),
+			inject: [ConfigService],
+		}),
 		BookingModule,
 		RoomModule,
 		UserModule,
@@ -18,4 +24,4 @@ import { AuthModule } from './auth/auth.module';
 	// controllers: [],
 	// providers: [],
 })
-export class AppModule {}
+export class AppModule { }

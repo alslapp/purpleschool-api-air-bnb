@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+
+  mongo-air-bnb:
+    image: mongo
+    container_name: mongo-air-bnb
+    restart:
+      always
+    ports:
+      - 27117:27017
+    volumes:
+      - ./.mongo:/data/db

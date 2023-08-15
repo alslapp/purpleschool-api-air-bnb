@@ -7,38 +7,38 @@
 
 ```bash
 # development
-$ npm run start
+npm run start
 
 # watch mode
-$ npm run start:dev
+npm run start:dev
 
 # production mode
-$ npm run start:prod
+npm run start:prod
 ```
 
 ### Test
 
 ```bash
 # e2e tests
-$ npm run test:e2e
+npm run test:e2e
 
 # unit tests
-$ npm run test
+npm run test
 ```
 
 ## Дабавленные пакеты
 
 ### Nestjs packages
 ```bash
-$ npm i @nestjs/mongoose mongoose
-$ npm i class-validator class-transformer
-$ npm i @nestjs/mapped-types
+npm i @nestjs/mongoose mongoose
+npm i class-validator class-transformer
+npm i @nestjs/mapped-types
 ```
 
 ### Passport JWT
 ```bash
-$ npm i @nestjs/jwt @nestjs/passport passport passport-jwt
-$ npm i -D @types/passport-jwt
+npm i @nestjs/jwt @nestjs/passport passport passport-jwt
+npm i -D @types/passport-jwt
 ```
 
 ### node-argon2
@@ -47,5 +47,35 @@ https://www.npmjs.com/package/argon2
 It's possible to hash using either Argon2i, Argon2d or Argon2id (default), and verify if a password matches a hash.
 
 ```bash
-$ npm i argon2
+npm i argon2
+```
+
+
+### Собрать приложение в docker
+```bash
+docker compose -f docker-compose-app.yml -f docker-compose-db.yml up -d
+```
+
+### Собрать только базу данных в docker
+```bash
+docker compose -f docker-compose-db.yml up -d
+```
+
+### Собрать только сервер в docker
+```bash
+docker compose -f docker-compose-app.yml up -d
+```
+
+### Войти в консоль контейнера
+```bash
+docker logs -f top-api
+```
+
+### Очистить docker
+```bash
+# удалить все, кроме volume: 
+docker stop $(docker ps -a -q) && docker system prune -a
+
+# удалить все volumes: 
+docker volume rm $(docker volume ls -q)
 ```
