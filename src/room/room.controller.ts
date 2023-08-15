@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	Post,
+	Body,
+	Patch,
+	Param,
+	Delete,
+	UseGuards,
+	NotFoundException,
+	BadRequestException, HttpCode, HttpStatus,
+} from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto, UpdateRoomDto } from './dto';
 import { MongoIdValidationPipe } from '../pipes';
@@ -6,6 +17,7 @@ import { Roles } from '../decorators';
 import { Role } from '../user/dto/user-roles.enum';
 import { RolesGuard } from '../auth/gards/roles.guard';
 import { JwtAuthGuard } from '../auth/gards';
+import { ERROR_ROOM_NOT_FOUND, ERROR_ROOM_EXISTS } from './room.constants';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('room')
@@ -14,7 +26,11 @@ export class RoomController {
 
 	@Roles(Role.ADMIN)
 	@Post()
-	create(@Body() dto: CreateRoomDto) {
+	async create(@Body() dto: CreateRoomDto) {
+		const room = await this.roomService.findByRoomNumber(dto.number);
+		if (room) {
+			throw new BadRequestException(ERROR_ROOM_EXISTS);
+		}
 		return this.roomService.create(dto);
 	}
 
@@ -26,19 +42,39 @@ export class RoomController {
 
 	@Roles(Role.ADMIN, Role.USER)
 	@Get(':id')
-	findOne(@Param('id', MongoIdValidationPipe) id: string) {
-		return this.roomService.findOne(id);
+	async findById(@Param('id', MongoIdValidationPipe) id: string) {
+		const room = await this.roomService.findById(id);
+		if (!room) {
+			throw new NotFoundException(ERROR_ROOM_NOT_FOUND);
+		}
+		return room;
+	}
+
+
+	@Roles(Role.ADMIN)
+	@HttpCode(HttpStatus.OK)
+	@Post('report')
+	async createReportForAllRooms(@Body('date') date: number) {
+		return this.roomService.createReportForAllRooms(date);
 	}
 
 	@Roles(Role.ADMIN)
 	@Patch(':id')
-	update(@Param('id', MongoIdValidationPipe) id: string, @Body() dto: UpdateRoomDto) {
+	async update(@Param('id', MongoIdValidationPipe) id: string, @Body() dto: UpdateRoomDto) {
+		const room = await this.roomService.findById(id);
+		if (!room) {
+			throw new NotFoundException(ERROR_ROOM_NOT_FOUND);
+		}
 		return this.roomService.update(id, dto);
 	}
 
 	@Roles(Role.ADMIN)
 	@Delete(':id')
-	remove(@Param('id', MongoIdValidationPipe) id: string) {
+	async remove(@Param('id', MongoIdValidationPipe) id: string) {
+		const room = await this.roomService.findById(id);
+		if (!room) {
+			throw new NotFoundException(ERROR_ROOM_NOT_FOUND);
+		}
 		return this.roomService.remove(id);
 	}
 }

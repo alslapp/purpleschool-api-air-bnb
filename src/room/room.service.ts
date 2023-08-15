@@ -1,20 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateRoomDto, UpdateRoomDto } from './dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument } from './models';
 import { Model } from 'mongoose';
-import { ERROR_ROOM_EXISTS, ERROR_ROOM_NOT_FOUND } from './room.constants';
+import { convertDateToUTC } from '../helpers/helpers';
+import { Booking, BookingDocument } from '../booking/models';
 
 @Injectable()
 export class RoomService {
-	constructor(@InjectModel(Room.name) private roomModel: Model<RoomDocument>) {}
+	constructor(
+		@InjectModel(Room.name) private roomModel: Model<RoomDocument>,
+		@InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
+	) {}
 
-	async create(dto: CreateRoomDto) {
-		const isRoomExists = (await this.roomModel.count({ number: dto.number })) && true;
-		if (isRoomExists) {
-			throw new HttpException(ERROR_ROOM_EXISTS, HttpStatus.BAD_REQUEST);
-		}
-		// create new room
+	create(dto: CreateRoomDto) {
 		const newRoom = new this.roomModel(dto);
 		return newRoom.save();
 	}
@@ -23,24 +22,72 @@ export class RoomService {
 		return this.roomModel.find();
 	}
 
-	async findOne(id: string) {
-		try {
-			const room = await this.roomModel.findById(id);
-			if (!room) throw new Error();
-			return room;
-		} catch (error) {
-			throw new HttpException(ERROR_ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
-		}
+	findById(id: string) {
+		return this.roomModel.findById(id);
 	}
 
-	async update(_id: string, dto: Omit<UpdateRoomDto, 'number'>) {
-		try {
-			const room = await this.roomModel.findOneAndUpdate({ _id }, { ...dto });
-			if (!room) throw new Error();
-			return this.findOne(_id);
-		} catch (error) {
-			throw new HttpException(ERROR_ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
-		}
+	findByRoomNumber(number: number) {
+		return this.roomModel.findOne({ number });
+	}
+
+	async createReportForAllRooms(date: number) {
+		const dateUTC = convertDateToUTC(date);
+
+		const from = new Date(dateUTC * 1000);
+		from.setDate(1);
+
+		const to = new Date(dateUTC * 1000);
+		// устанавливаем дату - последнее число месяца
+		to.setMonth(to.getMonth() + 1);
+		to.setDate(1);
+		to.setDate(to.getDate() - 1);
+		to.setUTCHours(0);
+		to.setUTCMinutes(0);
+		to.setUTCSeconds(0);
+		to.setUTCMilliseconds(0);
+
+		const fromTs = from.getTime() / 1000;
+		const toTs = to.getTime() / 1000;
+
+		const report = await this.roomModel
+			.aggregate()
+			.lookup({
+				from: 'bookings',
+				localField: '_id',
+				foreignField: 'roomId',
+				as: 'bookings',
+				pipeline: [
+					{
+						$match: {
+							date: {
+								$gte: fromTs,
+								$lte: toTs,
+							},
+						},
+					},
+				],
+			})
+			.addFields({
+				bookingCountDays: { $size: '$bookings' },
+			})
+			.group({
+				_id: {
+					number: '$number',
+					bookingCountDays: '$bookingCountDays',
+				},
+			})
+			.sort({
+				_id: 1,
+			});
+
+		return {
+			date,
+			report: report.map((r) => r._id),
+		};
+	}
+
+	async update(_id: string, data: UpdateRoomDto) {
+		return this.roomModel.findOneAndUpdate({ _id }, data, { new: true });
 	}
 
 	remove(_id: string) {

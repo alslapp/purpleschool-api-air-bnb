@@ -7,12 +7,6 @@ import { Types, disconnect } from 'mongoose';
 import { userDto, adminDto } from './user.dto';
 import { CreateRoomDto, UpdateRoomDto } from '../src/room/dto';
 import {
-	ERROR_USER_EXISTS,
-	ERROR_USER_VALIDATION_EMAIL,
-	ERROR_USER_VALIDATION_PASSWORD,
-	ERROR_USER_VALIDATION_PASSWORD_IS_NOT_STRING,
-} from '../src/user/user.constants';
-import {
 	ERROR_ROOM_AREA_IS_STRING,
 	ERROR_ROOM_AREA_TOO_LESS,
 	ERROR_ROOM_EXISTS,
@@ -22,7 +16,6 @@ import {
 	ERROR_BOOKING_DATE_ERROR,
 	ERROR_BOOKING_DATE_PAST,
 	ERROR_BOOKING_EXISTS,
-	ERROR_BOOKING_USER_NOT_FOUNT,
 } from '../src/booking/booking.constants';
 import { mainConfig } from '../src/main.config';
 
@@ -214,6 +207,7 @@ describe('AppController (e2e)', () => {
 			.expect(400, {
 				statusCode: 400,
 				message: ERROR_ROOM_EXISTS,
+				error: 'Bad Request',
 			});
 	});
 
@@ -415,9 +409,7 @@ describe('AppController (e2e)', () => {
 
 	// получаем бронь по id неавторизванным пользователем
 	it('/booking/:id (GET) - success', () => {
-		return request(app.getHttpServer())
-			.get(`/booking/${bookCreatedId}`)
-			.expect(401);
+		return request(app.getHttpServer()).get(`/booking/${bookCreatedId}`).expect(401);
 	});
 
 	// получаем бронь по id юзером
@@ -440,6 +432,29 @@ describe('AppController (e2e)', () => {
 			.then(({ body }: request.Response) => {
 				expect(body._id).toBe(bookCreatedId);
 			});
+	});
+
+	// REPORT /room/report
+
+	// обращение к роуту неавторизованным пользователем
+	it('/room/report (POST) - fail', () => {
+		return request(app.getHttpServer()).post(`/room/report`).expect(401);
+	});
+
+	// обращение к роуту юзером
+	it('/room/report (POST) - fail', () => {
+		return request(app.getHttpServer())
+			.post(`/room/report`)
+			.set('Authorization', `Bearer ${tokenUser}`)
+			.expect(403);
+	});
+
+	// обращение к роуту админом
+	it('/room/report (POST) - success', () => {
+		return request(app.getHttpServer())
+			.post(`/room/report`)
+			.set('Authorization', `Bearer ${tokenAdmin}`)
+			.expect(200);
 	});
 
 	// ####################################################################################
@@ -474,10 +489,7 @@ describe('AppController (e2e)', () => {
 		return request(app.getHttpServer())
 			.delete(`/room/${roomCreatedId}`)
 			.set('Authorization', `Bearer ${tokenAdmin}`)
-			.expect(200, {
-				acknowledged: true,
-				deletedCount: 0,
-			});
+			.expect(404);
 	});
 
 	// удаление брони неавторизованным пользователем

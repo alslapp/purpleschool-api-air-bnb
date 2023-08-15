@@ -4,8 +4,7 @@ import { Model } from 'mongoose';
 import { UpdateUserDto } from './dto';
 import { User, UserDocument } from './models';
 import * as argon from 'argon2';
-import {Roles} from "../decorators";
-import {Role} from "./dto/user-roles.enum";
+import { Role } from './dto/user-roles.enum';
 
 @Injectable()
 export class UserService {
@@ -23,9 +22,6 @@ export class UserService {
 		return this.sanitizeUser(await newUser.save());
 	}
 
-
-
-
 	async createAdmin(email: string, password: string) {
 		// get hash
 		const hash = await argon.hash(password);
@@ -39,15 +35,6 @@ export class UserService {
 		return this.sanitizeUser(await newUser.save());
 	}
 
-
-
-
-
-
-
-
-
-
 	async findAll() {
 		const users = await this.userModel.find();
 		return users.map(this.sanitizeUser);
@@ -58,9 +45,8 @@ export class UserService {
 		return this.sanitizeUser(user);
 	}
 
-	async update(_id: string, data: UpdateUserDto) {
-		await this.userModel.findOneAndUpdate({ _id }, data);
-		return this.findById(_id);
+	update(_id: string, data: UpdateUserDto) {
+		return this.userModel.findOneAndUpdate({ _id }, data, { new: true });
 	}
 
 	remove(_id: string) {

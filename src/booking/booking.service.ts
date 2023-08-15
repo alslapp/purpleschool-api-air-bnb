@@ -60,9 +60,8 @@ export class BookingService {
 		return this.bookingModel.findOne({ _id });
 	}
 
-	async updateById(_id: string, data: UpdateBookingDto) {
-		await this.bookingModel.findOneAndUpdate({ _id }, data);
-		return this.findById(_id);
+	updateById(_id: string, data: UpdateBookingDto) {
+		return this.bookingModel.findOneAndUpdate({ _id }, data, { new: true });
 	}
 
 	remove(_id: string) {
