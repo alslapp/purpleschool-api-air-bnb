@@ -3,9 +3,9 @@ WORKDIR /opt/app
 ADD package.json package.json
 RUN npm install
 ADD . .
-RUN npm run build
-RUN npm prune --production
-RUN rm -rf ./src/ \
+RUN npm run build \
+    && npm prune --production \
+    && rm -rf ./src/ \
     && rm -rf package-lock.json \
     && rm -rf nest-cli.json \
     && rm -rf tsconfig.build.json \
