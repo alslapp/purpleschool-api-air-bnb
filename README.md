@@ -50,10 +50,9 @@ It's possible to hash using either Argon2i, Argon2d or Argon2id (default), and v
 npm i argon2
 ```
 
-
 ### Собрать приложение в docker
 ```bash
-docker compose -f docker-compose-app.yml -f docker-compose-db.yml up -d
+docker compose -f docker-compose-app.yml -f docker-compose-app-2.yml -f docker-compose-db.yml up -d
 ```
 
 ### Собрать только базу данных в docker
@@ -72,10 +71,11 @@ docker logs -f top-api
 ```
 
 ### Очистить docker
+#### удалить все, кроме volume:
 ```bash
-# удалить все, кроме volume: 
 docker stop $(docker ps -a -q) && docker system prune -a
-
-# удалить все volumes: 
+```
+#### удалить все volumes:
+```bash
 docker volume rm $(docker volume ls -q)
 ```

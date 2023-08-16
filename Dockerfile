@@ -9,5 +9,6 @@ RUN npm run build \
     && rm -rf package-lock.json \
     && rm -rf nest-cli.json \
     && rm -rf tsconfig.build.json \
-    && rm -rf tsconfig.json
+    && rm -rf tsconfig.json \
+	&& rm -rf package.json
 CMD ["node", "./dist/main.js"]

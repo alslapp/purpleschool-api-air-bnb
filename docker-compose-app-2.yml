@@ -1,0 +1,7 @@
+version: '3.9'
+
+services:
+
+  top-api-air-bnb:
+    depends_on:
+      - mongo-topapi-air-bnb
