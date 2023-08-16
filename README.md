@@ -67,7 +67,7 @@ docker compose -f docker-compose-app.yml up -d
 
 ### Войти в консоль контейнера
 ```bash
-docker logs -f top-api
+docker logs -f top-api-air-bnb
 ```
 
 ### Очистить docker
@@ -78,4 +78,9 @@ docker stop $(docker ps -a -q) && docker system prune -a
 #### удалить все volumes:
 ```bash
 docker volume rm $(docker volume ls -q)
+```
+
+#### на VirtualBox не работает mongo v5+, можно поставить образ v4
+```bash
+image: mongo:4.4.6
 ```
