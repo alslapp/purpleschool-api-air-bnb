@@ -1,53 +1,50 @@
 ## Description
 
-Домашнее задание Purpleschool: NestJS - с нуля, современный backend на TypeScript и Node JS
+Тестовый проект Purpleschool: NestJS - с нуля, современный backend на TypeScript и Node JS
 
-Простой сервис бронироновая номеров.
 ### Running the app
 
 ```bash
 # development
-npm run start
+$ npm run start
 
 # watch mode
-npm run start:dev
+$ npm run start:dev
 
 # production mode
-npm run start:prod
+$ npm run start:prod
 ```
 
 ### Test
 
 ```bash
 # e2e tests
-npm run test:e2e
+$ npm run test:e2e
 
 # unit tests
-npm run test
+$ npm run test
 ```
 
 ## Дабавленные пакеты
 
 ### Nestjs packages
 ```bash
-npm i @nestjs/mongoose mongoose
-npm i class-validator class-transformer
-npm i @nestjs/mapped-types
+$ npm i @nestjs/mongoose mongoose
+$ npm i class-validator class-transformer
+$ npm i @nestjs/mapped-types
 ```
 
 ### Passport JWT
 ```bash
-npm i @nestjs/jwt @nestjs/passport passport passport-jwt
-npm i -D @types/passport-jwt
+$ npm i @nestjs/jwt @nestjs/passport passport passport-jwt
+$ npm i -D @types/passport-jwt
 ```
 
-### node-argon2
-https://www.npmjs.com/package/argon2
-
-It's possible to hash using either Argon2i, Argon2d or Argon2id (default), and verify if a password matches a hash.
-
+### bcryptjs
+https://www.npmjs.com/package/bcryptjs
 ```bash
-npm i argon2
+$ npm i bcryptjs
+$ npm i -D @types/bcryptjs 
 ```
 
 ### Собрать приложение в docker
@@ -67,7 +64,7 @@ docker compose -f docker-compose-app.yml up -d
 
 ### Войти в консоль контейнера
 ```bash
-docker logs -f top-api-air-bnb
+docker logs -f top-api
 ```
 
 ### Очистить docker
@@ -75,7 +72,7 @@ docker logs -f top-api-air-bnb
 ```bash
 docker stop $(docker ps -a -q) && docker system prune -a
 ```
-#### удалить все volumes:
+#### удалить все volumes: 
 ```bash
 docker volume rm $(docker volume ls -q)
 ```
@@ -83,4 +80,15 @@ docker volume rm $(docker volume ls -q)
 #### на VirtualBox не работает mongo v5+, можно поставить образ v4
 ```bash
 image: mongo:4.4.6
+```
+
+#### на VirtualBox не работает mongo v5+, можно поставить образ v4
+```bash
+image: mongo:4.4.6
+```
+### GHCR
+```bash
+# файл - https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
+# сначала локально на компе в консоли выполнить команду: (проверить в настройках гитхаба, чтобы токен не истек)
+# echo "GITHUB_TOKEN" | docker login ghcr.io -u USERNAME_GITHUB --password-stdin
 ```
