@@ -1,7 +1,6 @@
 ## Description
-
-Тестовый проект Purpleschool: NestJS - с нуля, современный backend на TypeScript и Node JS
-
+Домашнее задание по курсу Purpleschool: NestJS - с нуля, современный backend на TypeScript и Node JS
+(API для сервиса бронирования номеров)
 ### Running the app
 
 ```bash
@@ -40,11 +39,22 @@ $ npm i @nestjs/jwt @nestjs/passport passport passport-jwt
 $ npm i -D @types/passport-jwt
 ```
 
-### bcryptjs
-https://www.npmjs.com/package/bcryptjs
+### node-argon2
+https://www.npmjs.com/package/argon2
+
+It's possible to hash using either Argon2i, Argon2d or Argon2id (default), and verify if a password matches a hash.
 ```bash
-$ npm i bcryptjs
-$ npm i -D @types/bcryptjs 
+$ npm i argon2
+```
+
+### Собрать на проде только приложение
+удалить контейнер
+```bash
+docker remove -f top-api-air-bnb
+```
+собрать новый
+```bash
+docker compose -f docker-compose-app.yml up -d
 ```
 
 ### Собрать приложение в docker
@@ -64,7 +74,7 @@ docker compose -f docker-compose-app.yml up -d
 
 ### Войти в консоль контейнера
 ```bash
-docker logs -f top-api
+docker logs -f top-api-air-bnb
 ```
 
 ### Очистить docker
@@ -82,13 +92,9 @@ docker volume rm $(docker volume ls -q)
 image: mongo:4.4.6
 ```
 
-#### на VirtualBox не работает mongo v5+, можно поставить образ v4
-```bash
-image: mongo:4.4.6
-```
 ### GHCR
 ```bash
-# файл - https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
-# сначала локально на компе в консоли выполнить команду: (проверить в настройках гитхаба, чтобы токен не истек)
-# echo "GITHUB_TOKEN" | docker login ghcr.io -u USERNAME_GITHUB --password-stdin
+файл - https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
+сначала локально на компе в консоли выполнить команду: (проверить в настройках гитхаба, чтобы токен не истек)
+echo "GITHUB_TOKEN" | docker login ghcr.io -u USERNAME_GITHUB --password-stdin
 ```

@@ -50,7 +50,6 @@ export class RoomController {
 		return room;
 	}
 
-
 	@Roles(Role.ADMIN)
 	@HttpCode(HttpStatus.OK)
 	@Post('report')

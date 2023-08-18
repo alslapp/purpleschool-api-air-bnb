@@ -5,6 +5,7 @@ import { BookingModule } from './booking/booking.module';
 import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
 	imports: [
@@ -20,8 +21,9 @@ import { AuthModule } from './auth/auth.module';
 		RoomModule,
 		UserModule,
 		AuthModule,
+		FilesModule,
 	],
 	// controllers: [],
 	// providers: [],
 })
-export class AppModule { }
+export class AppModule {}

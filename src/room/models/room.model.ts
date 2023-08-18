@@ -3,6 +3,11 @@ import { HydratedDocument } from 'mongoose';
 
 export type RoomDocument = HydratedDocument<Room>;
 
+type TImage = {
+	name: string;
+	url: string;
+};
+
 @Schema()
 export class Room {
 	@Prop({ required: true, unique: true })
@@ -19,6 +24,9 @@ export class Room {
 
 	@Prop({ required: true })
 	price: number;
+
+	@Prop()
+	images: TImage[];
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
