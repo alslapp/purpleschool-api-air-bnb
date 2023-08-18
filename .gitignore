@@ -38,4 +38,5 @@ lerna-debug.log*
 .env
 .env.*
 
-/mongo/mongo-data/
+/.mongo
+/uploads
