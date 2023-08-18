@@ -1,1 +1,0 @@
-# purpleschool-api-air-bnb
