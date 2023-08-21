@@ -6,7 +6,7 @@ import { BookingStatusesEnum } from '../dto';
 
 export type BookingDocument = HydratedDocument<Booking>;
 
-@Schema()
+@Schema({ versionKey: false })
 export class Booking {
 	@Prop({ required: true })
 	date: number;

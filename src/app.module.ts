@@ -6,24 +6,33 @@ import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
+import * as Joi from 'joi';
+import { getMongoConfig } from './configs';
+import { NotifierModule } from './notifier/notifier.module';
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ isGlobal: true }),
+		ConfigModule.forRoot({
+			isGlobal: true,
+			validationSchema: Joi.object({
+				JWT_SECRET: Joi.string().required(),
+				MONGO_HOST: Joi.string().required(),
+				MONGO_PORT: Joi.number().required(),
+				MONGO_AUTHDATABASE: Joi.string().required(),
+				TELEGRAM_TOKEN_HTTP_API: Joi.string().required(),
+			}),
+		}),
 		MongooseModule.forRootAsync({
 			imports: [ConfigModule],
-			useFactory: async (configService: ConfigService) => ({
-				uri: configService.get<string>('MONGODB_URI'),
-			}),
 			inject: [ConfigService],
+			useFactory: getMongoConfig,
 		}),
 		BookingModule,
 		RoomModule,
 		UserModule,
 		AuthModule,
 		FilesModule,
+		NotifierModule,
 	],
-	// controllers: [],
-	// providers: [],
 })
 export class AppModule {}

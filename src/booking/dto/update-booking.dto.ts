@@ -1,6 +1,4 @@
-import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreateBookingDto } from './create-booking.dto';
+import { PartialType } from '@nestjs/mapped-types';
 
-export class UpdateBookingDto extends PartialType(
-	OmitType(CreateBookingDto, ['roomId'] as const),
-) {}
+export class UpdateBookingDto extends PartialType(CreateBookingDto) {}

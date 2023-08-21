@@ -6,10 +6,7 @@ import { ERROR_REGISTRATION } from './auth.constants';
 
 @Controller('auth')
 export class AuthController {
-	constructor(
-		private authService: AuthService,
-		private userService: UserService
-	) {}
+	constructor(private authService: AuthService, private userService: UserService) {}
 
 	@Post('register')
 	async register(@Body() { login, password }: AuthDto) {
@@ -27,8 +24,6 @@ export class AuthController {
 		return this.authService.signIn(payload);
 	}
 
-
-
 	@Post('register-admin')
 	async registerAdmin(@Body() { login, password }: AuthDto) {
 		const user = await this.userService.findUser(login);
@@ -37,6 +32,4 @@ export class AuthController {
 		}
 		return this.userService.createAdmin(login, password);
 	}
-
-
 }

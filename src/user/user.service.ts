@@ -35,18 +35,19 @@ export class UserService {
 		return this.sanitizeUser(await newUser.save());
 	}
 
-	async findAll() {
-		const users = await this.userModel.find();
+	async findAll(options: { limit?: number; skip?: number } = {}) {
+		const users = await this.userModel.find({}, {}, options);
 		return users.map(this.sanitizeUser);
 	}
 
-	async findById(id: string) {
-		const user = await this.userModel.findById(id);
+	async findById(id: string, select = '') {
+		const user = await this.userModel.findById(id).select(select);
 		return this.sanitizeUser(user);
 	}
 
-	update(_id: string, data: UpdateUserDto) {
-		return this.userModel.findOneAndUpdate({ _id }, data, { new: true });
+	async update(_id: string, data: UpdateUserDto) {
+		const user = await this.userModel.findOneAndUpdate({ _id }, data, { new: true });
+		return this.sanitizeUser(user);
 	}
 
 	remove(_id: string) {

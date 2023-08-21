@@ -3,20 +3,20 @@ import {
 	Get,
 	Body,
 	Patch,
-	Param,
 	Delete,
 	NotFoundException,
 	UseGuards,
 	ForbiddenException,
+	Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto';
-import { MongoIdValidationPipe } from '../pipes';
 import { ERROR_USER_FORBIDDEN, ERROR_USER_NOT_FOUND } from './user.constants';
 import { JwtAuthGuard } from '../auth/gards';
 import { RolesGuard } from '../auth/gards/roles.guard';
-import { Roles, UserId } from '../decorators';
+import { Params, Roles, UserId } from '../decorators';
 import { Role } from './dto/user-roles.enum';
+import PaginationParams from '../pagination/pagination-params.dto';
 
 @Controller('user')
 export class UserController {
@@ -25,14 +25,14 @@ export class UserController {
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(Role.ADMIN)
 	@Get()
-	findAll() {
-		return this.userService.findAll();
+	findAll(@Query() { skip, limit }: PaginationParams) {
+		return this.userService.findAll({ skip, limit });
 	}
 
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(Role.USER)
 	@Get(':id')
-	async findById(@Param('id', MongoIdValidationPipe) id: string, @UserId() userId: string) {
+	async findById(@Params('id') id: string, @UserId() userId: string) {
 		if (id !== userId) {
 			throw new ForbiddenException(ERROR_USER_FORBIDDEN);
 		}
@@ -45,11 +45,7 @@ export class UserController {
 
 	@UseGuards(JwtAuthGuard)
 	@Patch(':id')
-	update(
-		@Param('id', MongoIdValidationPipe) id: string,
-		@Body() dto: UpdateUserDto,
-		@UserId() userId: string,
-	) {
+	update(@Params('id') id: string, @Body() dto: UpdateUserDto, @UserId() userId: string) {
 		if (id !== userId) {
 			throw new ForbiddenException(ERROR_USER_FORBIDDEN);
 		}
@@ -58,7 +54,7 @@ export class UserController {
 
 	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
-	async remove(@Param('id', MongoIdValidationPipe) id: string, @UserId() userId: string) {
+	async remove(@Params('id') id: string, @UserId() userId: string) {
 		if (id !== userId) {
 			throw new ForbiddenException(ERROR_USER_FORBIDDEN);
 		}

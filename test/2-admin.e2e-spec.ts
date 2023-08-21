@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, Logger } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { disconnect, Types } from 'mongoose';
-import { mainConfig } from '../src/main.config';
+import { mainConfig } from '../src/configs/main.config';
 import { ERROR_NOT_IS_EMAIL, ERROR_PASSWORD_EMPTY } from '../src/auth/auth.constants';
 import { userDto, adminDto } from './user.dto';
 import { ERROR_USER_AUTH } from '../src/user/user.constants';
@@ -31,7 +31,6 @@ describe('AppController (e2e)', () => {
 		app = moduleFixture.createNestApplication();
 		mainConfig(app);
 		await app.init();
-		app.useLogger(new Logger());
 	});
 
 	// Register

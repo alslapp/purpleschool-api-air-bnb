@@ -1,10 +1,10 @@
 // т.к. при создании брони нужны id юзера и комнаты, соотв. все тесты разместил в одном файле.
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, Logger } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { Types, disconnect } from 'mongoose';
-import { userDto, adminDto } from './user.dto';
+import { userDto, adminDto, testUserUpdateData } from './user.dto';
 import { CreateRoomDto, UpdateRoomDto } from '../src/room/dto';
 import {
 	ERROR_ROOM_AREA_IS_STRING,
@@ -17,7 +17,7 @@ import {
 	ERROR_BOOKING_DATE_PAST,
 	ERROR_BOOKING_EXISTS,
 } from '../src/booking/booking.constants';
-import { mainConfig } from '../src/main.config';
+import { mainConfig } from '../src/configs';
 
 const testRoom: CreateRoomDto = {
 	title: 'Комната 99999999 тест e2e',
@@ -60,7 +60,6 @@ describe('AppController (e2e)', () => {
 		app = moduleFixture.createNestApplication();
 		mainConfig(app);
 		await app.init();
-		app.useLogger(new Logger());
 	});
 
 	// ####################################################################################
@@ -88,6 +87,15 @@ describe('AppController (e2e)', () => {
 				tokenUser = body.access_token;
 				expect(tokenUser).toBeDefined();
 			});
+	});
+
+	// add name, phone
+	it('/user/:id (PATCH) - success', () => {
+		return request(app.getHttpServer())
+			.patch(`/user/${userCreatedId}`)
+			.set('Authorization', `Bearer ${tokenUser}`)
+			.send(testUserUpdateData)
+			.expect(200);
 	});
 
 	// Create Admin
@@ -185,10 +193,18 @@ describe('AppController (e2e)', () => {
 	it('/room (POST) - fail', () => {
 		const weakTestRoom: UpdateRoomDto = { ...testRoom };
 
-		if (weakTestRoom?.area) delete weakTestRoom.area;
-		if (weakTestRoom?.price) delete weakTestRoom.price;
-		if (weakTestRoom?.title) delete weakTestRoom.title;
-		if (weakTestRoom?.type) delete weakTestRoom.type;
+		if (weakTestRoom?.area) {
+			delete weakTestRoom.area;
+		}
+		if (weakTestRoom?.price) {
+			delete weakTestRoom.price;
+		}
+		if (weakTestRoom?.title) {
+			delete weakTestRoom.title;
+		}
+		if (weakTestRoom?.type) {
+			delete weakTestRoom.type;
+		}
 
 		return request(app.getHttpServer())
 			.post('/room')
@@ -336,6 +352,7 @@ describe('AppController (e2e)', () => {
 			.expect(400, {
 				statusCode: 400,
 				message: ERROR_BOOKING_EXISTS,
+				error: 'Bad Request',
 			});
 	});
 
@@ -367,6 +384,7 @@ describe('AppController (e2e)', () => {
 			.expect(400, {
 				statusCode: 400,
 				message: ERROR_BOOKING_DATE_PAST,
+				error: 'Bad Request',
 			});
 	});
 
@@ -382,6 +400,7 @@ describe('AppController (e2e)', () => {
 			.expect(400, {
 				statusCode: 400,
 				message: ERROR_ROOM_NOT_FOUND,
+				error: 'Bad Request',
 			});
 	});
 
@@ -432,6 +451,27 @@ describe('AppController (e2e)', () => {
 			.then(({ body }: request.Response) => {
 				expect(body._id).toBe(bookCreatedId);
 			});
+	});
+
+	// отменяем бронь по id неавторизованным пользователем
+	it('/booking/cancel/:id (PATCH) - fail', () => {
+		return request(app.getHttpServer()).patch(`/booking/cancel/${bookCreatedId}`).expect(401);
+	});
+
+	// отменяем бронь по id админом
+	it('/booking/cancel/:id (PATCH) - fail', () => {
+		return request(app.getHttpServer())
+			.patch(`/booking/cancel/${bookCreatedId}`)
+			.set('Authorization', `Bearer ${tokenAdmin}`)
+			.expect(403);
+	});
+
+	// отменяем бронь по id юзером
+	it('/booking/cancel/:id (PATCH) - success', () => {
+		return request(app.getHttpServer())
+			.patch(`/booking/cancel/${bookCreatedId}`)
+			.set('Authorization', `Bearer ${tokenUser}`)
+			.expect(200);
 	});
 
 	// REPORT /room/report

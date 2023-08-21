@@ -5,38 +5,38 @@
 
 ```bash
 # development
-$ npm run start
+npm run start
 
 # watch mode
-$ npm run start:dev
+npm run start:dev
 
 # production mode
-$ npm run start:prod
+npm run start:prod
 ```
 
 ### Test
-
+e2e tests
 ```bash
-# e2e tests
-$ npm run test:e2e
-
-# unit tests
-$ npm run test
+npm run test:e2e
+```
+unit tests
+```bash
+npm run test
 ```
 
 ## Дабавленные пакеты
 
 ### Nestjs packages
 ```bash
-$ npm i @nestjs/mongoose mongoose
-$ npm i class-validator class-transformer
-$ npm i @nestjs/mapped-types
+npm i @nestjs/mongoose mongoose
+npm i class-validator class-transformer
+npm i @nestjs/mapped-types
 ```
 
 ### Passport JWT
 ```bash
-$ npm i @nestjs/jwt @nestjs/passport passport passport-jwt
-$ npm i -D @types/passport-jwt
+npm i @nestjs/jwt @nestjs/passport passport passport-jwt
+npm i -D @types/passport-jwt
 ```
 
 ### node-argon2
@@ -44,7 +44,11 @@ https://www.npmjs.com/package/argon2
 
 It's possible to hash using either Argon2i, Argon2d or Argon2id (default), and verify if a password matches a hash.
 ```bash
-$ npm i argon2
+npm i argon2
+```
+
+```bash
+npm i joi
 ```
 
 ### Собрать на проде только приложение

@@ -1,14 +1,13 @@
-version: '3.9'
-
 services:
 
   mongo-topapi-air-bnb:
     image: mongo
     container_name: mongo-topapi-air-bnb
-    restart:
-      always
+    restart: always
+    env_file:
+      - ./.env.prod
     ports:
-      - 27117:27017
+      - "${MONGO_PORT}:27017"
     volumes:
       - ./.mongo:/data/db
     networks:

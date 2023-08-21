@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
 
   top-api-air-bnb:
@@ -9,10 +7,12 @@ services:
     image: top-api-air-bnb:latest
     container_name: top-api-air-bnb
     restart: always
-    ports:
-      - 3338:3338
     env_file:
       - ./.env.prod
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    volumes:
+      - ./uploads:/opt/app/uploads/
     networks:
       - topapi-air-bnb
 

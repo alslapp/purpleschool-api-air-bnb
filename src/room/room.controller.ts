@@ -4,20 +4,22 @@ import {
 	Post,
 	Body,
 	Patch,
-	Param,
 	Delete,
 	UseGuards,
 	NotFoundException,
-	BadRequestException, HttpCode, HttpStatus,
+	BadRequestException,
+	HttpCode,
+	HttpStatus,
+	Query,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto, UpdateRoomDto } from './dto';
-import { MongoIdValidationPipe } from '../pipes';
-import { Roles } from '../decorators';
+import { Params, Roles } from '../decorators';
 import { Role } from '../user/dto/user-roles.enum';
 import { RolesGuard } from '../auth/gards/roles.guard';
 import { JwtAuthGuard } from '../auth/gards';
 import { ERROR_ROOM_NOT_FOUND, ERROR_ROOM_EXISTS } from './room.constants';
+import PaginationParams from '../pagination/pagination-params.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('room')
@@ -36,13 +38,13 @@ export class RoomController {
 
 	@Roles(Role.ADMIN, Role.USER)
 	@Get()
-	findAll() {
-		return this.roomService.findAll();
+	findAll(@Query() { skip, limit }: PaginationParams) {
+		return this.roomService.findAll({ skip, limit });
 	}
 
 	@Roles(Role.ADMIN, Role.USER)
 	@Get(':id')
-	async findById(@Param('id', MongoIdValidationPipe) id: string) {
+	async findById(@Params('id') id: string) {
 		const room = await this.roomService.findById(id);
 		if (!room) {
 			throw new NotFoundException(ERROR_ROOM_NOT_FOUND);
@@ -59,7 +61,7 @@ export class RoomController {
 
 	@Roles(Role.ADMIN)
 	@Patch(':id')
-	async update(@Param('id', MongoIdValidationPipe) id: string, @Body() dto: UpdateRoomDto) {
+	async update(@Params('id') id: string, @Body() dto: UpdateRoomDto) {
 		const room = await this.roomService.findById(id);
 		if (!room) {
 			throw new NotFoundException(ERROR_ROOM_NOT_FOUND);
@@ -69,7 +71,7 @@ export class RoomController {
 
 	@Roles(Role.ADMIN)
 	@Delete(':id')
-	async remove(@Param('id', MongoIdValidationPipe) id: string) {
+	async remove(@Params('id') id: string) {
 		const room = await this.roomService.findById(id);
 		if (!room) {
 			throw new NotFoundException(ERROR_ROOM_NOT_FOUND);

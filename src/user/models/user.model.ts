@@ -4,7 +4,7 @@ import { Role } from '../dto/user-roles.enum';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema()
+@Schema({ versionKey: false })
 export class User {
 	@Prop({ required: true, unique: true })
 	email: string;

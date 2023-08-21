@@ -18,12 +18,12 @@ export class RoomService {
 		return newRoom.save();
 	}
 
-	findAll() {
-		return this.roomModel.find();
+	findAll(options: { limit?: number; skip?: number } = {}) {
+		return this.roomModel.find({}, {}, options);
 	}
 
-	findById(id: string) {
-		return this.roomModel.findById(id);
+	findById(id: string, select = '') {
+		return this.roomModel.findById(id).select(select);
 	}
 
 	findByRoomNumber(number: number) {

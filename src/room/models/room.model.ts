@@ -8,7 +8,7 @@ type TImage = {
 	url: string;
 };
 
-@Schema()
+@Schema({ versionKey: false })
 export class Room {
 	@Prop({ required: true, unique: true })
 	number: number;
