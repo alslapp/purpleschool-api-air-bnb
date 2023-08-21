@@ -9,6 +9,7 @@ import { FilesModule } from './files/files.module';
 import * as Joi from 'joi';
 import { getMongoConfig } from './configs';
 import { NotifierModule } from './notifier/notifier.module';
+import { ApiTestModule } from './api-test/api-test.module';
 
 @Module({
 	imports: [
@@ -33,6 +34,7 @@ import { NotifierModule } from './notifier/notifier.module';
 		AuthModule,
 		FilesModule,
 		NotifierModule,
+		ApiTestModule,
 	],
 })
 export class AppModule {}
