@@ -38,5 +38,5 @@ lerna-debug.log*
 
 # ENV files
 .env
-env.*
+.env.*
 !env.example*
