@@ -23,6 +23,7 @@ async function bootstrap() {
 		);
 		return;
 	}
+
 	await app.listen(httpPort);
 	console.log(
 		'\x1b[32m',

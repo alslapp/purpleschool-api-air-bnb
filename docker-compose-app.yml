@@ -1,21 +1,28 @@
 services:
 
-  top-api-air-bnb:
+  top-api-air-bnb-app:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: top-api-air-bnb:latest
+      dockerfile: ./apps/app/Dockerfile
+    image: top-api-air-bnb-app:latest
     # image: ghcr.io/alslapp/purpleschool-api-air-bnb:main
     container_name: top-api-air-bnb
     restart: always
     env_file:
-      - ./.env.prod
+      - ./apps/app/.env
+      - ./apps/app/.env.prod
     ports:
-      - "${HTTP_PORT}:${HTTP_PORT}"
+      - 3338:3338
     volumes:
-      - ./uploads:/opt/app/uploads/
-    networks:
-      - topapi-air-bnb
+      - ./.volumes/uploads:/opt/app/uploads/
 
-networks:
-  topapi-air-bnb:
+  top-api-air-bnb-telegram:
+    build:
+      context: .
+      dockerfile: ./apps/telegram/Dockerfile
+    image: top-api-air-bnb-telegram:latest
+    container_name: top-api-air-bnb-telegram
+    restart: always
+    env_file:
+      - ./apps/telegram/.env
+      - ./apps/telegram/.env.prod

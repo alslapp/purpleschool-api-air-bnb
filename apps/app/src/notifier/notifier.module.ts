@@ -1,21 +1,18 @@
 import { Global, Module } from '@nestjs/common';
 import { NotifierService } from './notifier.service';
-import { TelegramModule } from '../telegram/telegram.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getTelegramConfig } from '../configs';
 import { UserModule } from '../user/user.module';
+import { RmqModule } from '@app/common';
+import { TELEGRAM_SERVICE } from '../constants';
 
 @Global()
 @Module({
 	providers: [NotifierService],
 	exports: [NotifierService],
 	imports: [
-		TelegramModule.register({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: getTelegramConfig,
-		}),
 		UserModule,
+		RmqModule.register({
+			name: TELEGRAM_SERVICE,
+		}),
 	],
 })
 export class NotifierModule {}

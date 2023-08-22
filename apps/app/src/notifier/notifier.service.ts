@@ -1,20 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { TelegramService } from '../telegram/telegram.service';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { TNotifyTemplate, NotifyProviders } from './notify.types';
 import { format } from 'date-fns';
+import { TELEGRAM_SERVICE } from '../constants';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class NotifierService {
-	constructor(private readonly telegramService: TelegramService) {}
+	private readonly logger = new Logger(NotifierService.name);
+
+		constructor(@Inject(TELEGRAM_SERVICE) private readonly telegramService: ClientProxy) {}
 
 	sendMessage(templateMessage: TNotifyTemplate, data: { [key: string]: any }) {
 		NotifyProviders.forEach((provider) => {
 			if (!(provider in templateMessage)) return;
 			const text = this.renderTemplate(templateMessage[provider], data);
-
-			// console.log(`send message:`);
-			// console.log(text);
-
 			switch (provider) {
 				case 'telegram':
 					this.sendToTelegram(text);
@@ -32,16 +31,21 @@ export class NotifierService {
 	}
 
 	private sendToTelegram(text: string) {
-		console.log(`sendToTelegram`);
-		this.telegramService.sendMessage(text);
+		this.logger.log(`sendToTelegram`);
+		this.telegramService.emit('send_message', {
+			text,
+		});
+		return;
 	}
 
 	private sendToEmail(text: string) {
-		console.log(`sendToEmail`);
+		// this.logger.log(`sendToEmail`);
+		return;
 	}
 
 	private sendToSms(text: string) {
-		console.log(`sendToSms`);
+		// this.logger.log(`sendToSms`);
+		return;
 	}
 
 	renderTemplate(template: string[], data: { [key: string]: any }): string {

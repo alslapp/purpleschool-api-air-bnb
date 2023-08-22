@@ -62,6 +62,14 @@ npm install --save @nestjs/schedule
 npm install --save-dev @types/cron
 ```
 
+```bash
+npm i --save @nestjs/microservices
+```
+
+```bash
+npm i --save amqplib amqp-connection-manager
+```
+
 # Docker
 для сборки сервера нужны 2 файла ENV
 в файле .env нужно указать HTTP_PORT  

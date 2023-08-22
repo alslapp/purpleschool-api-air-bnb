@@ -11,6 +11,8 @@ import { NotifierModule } from './notifier/notifier.module';
 import { ApiTestModule } from './api-test/api-test.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
+import { RmqModule } from '@app/common';
+import { TELEGRAM_SERVICE } from './constants';
 
 @Module({
 	imports: [
@@ -24,6 +26,7 @@ import * as Joi from 'joi';
 				TELEGRAM_TOKEN_HTTP_API: Joi.string().required(),
 				API_TEST_TOKEN: Joi.string().required(),
 			}),
+			envFilePath: './apps/app/.env',
 		}),
 		MongooseModule.forRootAsync({
 			imports: [ConfigModule],
@@ -42,6 +45,9 @@ import * as Joi from 'joi';
 		AuthModule,
 		FilesModule,
 		NotifierModule,
+		RmqModule.register({
+			name: TELEGRAM_SERVICE,
+		}),
 	],
 })
 export class AppModule {}

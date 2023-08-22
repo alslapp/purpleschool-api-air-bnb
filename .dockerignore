@@ -1,4 +1,4 @@
-.mongo/
+.volumes/
 node_modules/
 .idea
 .git
@@ -13,7 +13,6 @@ test
 .env
 .env.*
 *.env
-
-
-Вопросы.txt
-схема nestjs.png
+.learn/
+dist/
+uploads/
