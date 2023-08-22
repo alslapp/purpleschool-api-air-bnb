@@ -19,7 +19,7 @@ import * as Joi from 'joi';
 			validationSchema: Joi.object({
 				JWT_SECRET: Joi.string().required(),
 				MONGO_HOST: Joi.string().required(),
-				MONGO_PORT: Joi.number().required(),
+				MONGO_PORT: Joi.number(),
 				MONGO_AUTHDATABASE: Joi.string().required(),
 				TELEGRAM_TOKEN_HTTP_API: Joi.string().required(),
 				API_TEST_TOKEN: Joi.string().required(),
