@@ -62,7 +62,12 @@ npm install --save @nestjs/schedule
 npm install --save-dev @types/cron
 ```
 
-### Собрать на проде только приложение
+# Docker
+для сборки сервера нужны 2 файла ENV
+в файле .env нужно указать HTTP_PORT  
+в файле .env.prod нужно все остальные данные
+
+### Собрать на проде только Сервер
 удалить контейнер
 ```bash
 docker remove -f top-api-air-bnb

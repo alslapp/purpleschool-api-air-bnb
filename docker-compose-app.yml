@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: top-api-air-bnb:latest
+    # image: ghcr.io/alslapp/purpleschool-api-air-bnb:main
     container_name: top-api-air-bnb
     restart: always
     env_file:
