@@ -6,10 +6,11 @@ import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
-import * as Joi from 'joi';
-import { getMongoConfig } from './configs';
+import { getApiTestConfig, getMongoConfig } from './configs';
 import { NotifierModule } from './notifier/notifier.module';
 import { ApiTestModule } from './api-test/api-test.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import * as Joi from 'joi';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { ApiTestModule } from './api-test/api-test.module';
 				MONGO_PORT: Joi.number().required(),
 				MONGO_AUTHDATABASE: Joi.string().required(),
 				TELEGRAM_TOKEN_HTTP_API: Joi.string().required(),
+				API_TEST_TOKEN: Joi.string().required(),
 			}),
 		}),
 		MongooseModule.forRootAsync({
@@ -28,13 +30,18 @@ import { ApiTestModule } from './api-test/api-test.module';
 			inject: [ConfigService],
 			useFactory: getMongoConfig,
 		}),
+		ApiTestModule.register({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: getApiTestConfig,
+		}),
+		ScheduleModule.forRoot(),
 		BookingModule,
 		RoomModule,
 		UserModule,
 		AuthModule,
 		FilesModule,
 		NotifierModule,
-		ApiTestModule,
 	],
 })
 export class AppModule {}

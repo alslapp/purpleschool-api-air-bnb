@@ -3,9 +3,7 @@ import { TelegramService } from './telegram.service';
 import { ITelegramModuleAsyncOptions } from './telegram.interface';
 import { TELEGRAM_MODULE_OPTIONS } from './telegram.constants';
 
-@Module({
-	exports: [TelegramService],
-})
+@Module({})
 export class TelegramModule {
 	static register(options: ITelegramModuleAsyncOptions): DynamicModule {
 		const asyncOptions = this.createAsyncOptionsProvider(options);

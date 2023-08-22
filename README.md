@@ -51,6 +51,17 @@ npm i argon2
 npm i joi
 ```
 
+```bash
+npm i --save @nestjs/axios axios
+```
+
+```bash
+npm install --save @nestjs/schedule
+```
+```bash
+npm install --save-dev @types/cron
+```
+
 ### Собрать на проде только приложение
 удалить контейнер
 ```bash

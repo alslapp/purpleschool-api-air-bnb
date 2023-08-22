@@ -1,11 +1,10 @@
 import { ModuleMetadata } from '@nestjs/common';
 
-export interface ITelegramOptions {
-	chatId: string;
+export interface IApiTestOptions {
 	token: string;
 }
 
-export interface ITelegramModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
-	useFactory: (...args: any[]) => Promise<ITelegramOptions> | ITelegramOptions;
+export interface IApiTestModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+	useFactory: (...args: any[]) => Promise<IApiTestOptions> | IApiTestOptions;
 	inject?: any[];
 }
