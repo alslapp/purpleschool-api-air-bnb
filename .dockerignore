@@ -12,3 +12,8 @@ test
 .gitignore
 .env
 .env.*
+*.env
+
+
+Вопросы.txt
+схема nestjs.png

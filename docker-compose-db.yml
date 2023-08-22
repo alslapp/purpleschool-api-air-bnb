@@ -8,8 +8,4 @@ services:
       - 27117:27017
     volumes:
       - ./.mongo:/data/db
-    networks:
-      - topapi-air-bnb
 
-networks:
-  topapi-air-bnb:

@@ -72,24 +72,19 @@ npm install --save-dev @types/cron
 ```bash
 docker remove -f top-api-air-bnb
 ```
-собрать новый
+собрать новый сервер
 ```bash
-docker compose -f docker-compose-app.yml up -d
+npm run docker:build:server
 ```
 
 ### Собрать приложение в docker
 ```bash
-docker compose -f docker-compose-app.yml -f docker-compose-app-2.yml -f docker-compose-db.yml up -d
+npm run docker:build:app
 ```
 
 ### Собрать только базу данных в docker
 ```bash
-docker compose -f docker-compose-db.yml up -d
-```
-
-### Собрать только сервер в docker
-```bash
-docker compose -f docker-compose-app.yml up -d
+npm run docker:build:db
 ```
 
 ### Войти в консоль контейнера
