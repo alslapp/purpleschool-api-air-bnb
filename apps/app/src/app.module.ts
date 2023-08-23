@@ -23,7 +23,6 @@ import { TELEGRAM_SERVICE } from './constants';
 				MONGO_HOST: Joi.string().required(),
 				MONGO_PORT: Joi.number(),
 				MONGO_AUTHDATABASE: Joi.string().required(),
-				TELEGRAM_TOKEN_HTTP_API: Joi.string().required(),
 				API_TEST_TOKEN: Joi.string().required(),
 			}),
 			envFilePath: './apps/app/.env',
@@ -50,4 +49,4 @@ import { TELEGRAM_SERVICE } from './constants';
 		}),
 	],
 })
-export class AppModule {}
+export class AppModule { }
