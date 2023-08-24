@@ -8,7 +8,7 @@ import { ClientProxy } from '@nestjs/microservices';
 export class NotifierService {
 	private readonly logger = new Logger(NotifierService.name);
 
-		constructor(@Inject(TELEGRAM_SERVICE) private readonly telegramService: ClientProxy) {}
+	constructor(@Inject(TELEGRAM_SERVICE) private readonly telegramService: ClientProxy) {}
 
 	sendMessage(templateMessage: TNotifyTemplate, data: { [key: string]: any }) {
 		NotifyProviders.forEach((provider) => {

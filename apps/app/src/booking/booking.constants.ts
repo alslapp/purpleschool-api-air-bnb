@@ -16,4 +16,5 @@ export const ERROR_BOOKING_DATE_ERROR = 'Задана неверная дата'
 
 export const ERROR_BOOKING_CANCELLED_YET = 'Бронь уже отменена';
 
-export const ERROR_BOOKING_CANCELLED_FORBIDDEN = 'Недостаточно прав пользователя для отмены данной брони';
+export const ERROR_BOOKING_CANCELLED_FORBIDDEN =
+	'Недостаточно прав пользователя для отмены данной брони';

@@ -3,20 +3,20 @@ import { TelegramController } from './telegram.controller';
 import { TelegramService } from './telegram.service';
 
 describe('TelegramController', () => {
-  let telegramController: TelegramController;
+	let telegramController: TelegramController;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [TelegramController],
-      providers: [TelegramService],
-    }).compile();
+	beforeEach(async () => {
+		const app: TestingModule = await Test.createTestingModule({
+			controllers: [TelegramController],
+			providers: [TelegramService],
+		}).compile();
 
-    telegramController = app.get<TelegramController>(TelegramController);
-  });
+		telegramController = app.get<TelegramController>(TelegramController);
+	});
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(telegramController.getHello()).toBe('Hello World!');
-    });
-  });
+	describe('root', () => {
+		it('should return "Hello World!"', () => {
+			expect(telegramController.getHello()).toBe('Hello World!');
+		});
+	});
 });

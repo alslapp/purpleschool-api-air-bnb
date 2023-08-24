@@ -7,7 +7,6 @@ const getMongoString = (configService: ConfigService) =>
 	configService.get<string>('MONGO_AUTHDATABASE');
 
 export const getMongoConfig = async (configService: ConfigService) => {
-	console.log('mongoString: ', getMongoString(configService));
 	return {
 		uri: getMongoString(configService),
 	};

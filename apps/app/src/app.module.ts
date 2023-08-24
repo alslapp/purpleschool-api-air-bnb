@@ -6,13 +6,14 @@ import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
-import { getApiTestConfig, getMongoConfig } from './configs';
+import { getMongoConfig } from './configs';
 import { NotifierModule } from './notifier/notifier.module';
 import { ApiTestModule } from './api-test/api-test.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
 import { RmqModule } from '@app/common';
 import { TELEGRAM_SERVICE } from './constants';
+import { UserZodModule } from './user-zod/user-zod.module';
 
 @Module({
 	imports: [
@@ -21,9 +22,7 @@ import { TELEGRAM_SERVICE } from './constants';
 			validationSchema: Joi.object({
 				JWT_SECRET: Joi.string().required(),
 				MONGO_HOST: Joi.string().required(),
-				MONGO_PORT: Joi.number(),
 				MONGO_AUTHDATABASE: Joi.string().required(),
-				API_TEST_TOKEN: Joi.string().required(),
 			}),
 			envFilePath: './apps/app/.env',
 		}),
@@ -32,11 +31,7 @@ import { TELEGRAM_SERVICE } from './constants';
 			inject: [ConfigService],
 			useFactory: getMongoConfig,
 		}),
-		ApiTestModule.register({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: getApiTestConfig,
-		}),
+		ApiTestModule,
 		ScheduleModule.forRoot(),
 		BookingModule,
 		RoomModule,
@@ -47,6 +42,7 @@ import { TELEGRAM_SERVICE } from './constants';
 		RmqModule.register({
 			name: TELEGRAM_SERVICE,
 		}),
+		UserZodModule,
 	],
 })
-export class AppModule { }
+export class AppModule {}

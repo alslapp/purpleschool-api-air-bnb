@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { API_TEST_ERROR, API_TEST_PATH } from './api-test.constants';
-import { Album, Comment } from './api-test.models';
+import { API_TEST_ERROR, API_TEST_PATH } from '@app/common';
+import { Album, Comment } from '@app/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom, catchError } from 'rxjs';
 

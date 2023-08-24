@@ -1,1 +1,2 @@
 export const TELEGRAM_SERVICE = 'TELEGRAM';
+export const API_TEST_SERVICE = 'APITEST';
