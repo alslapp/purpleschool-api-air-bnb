@@ -15,25 +15,25 @@ npm run start:prod
 ```
 
 ### Test
-e2e tests
 ```bash
+# e2e tests
 npm run test:e2e
-```
-unit tests
-```bash
+
+# unit tests
 npm run test
 ```
 
 ## Дабавленные пакеты
 
-## Nestjs packages
-## MongoDb
+### MongoDb
 ```bash
 npm i @nestjs/mongoose mongoose
 ```
+### class-transformer
 ```bash
 npm i class-validator class-transformer
 ```
+### mapped-types
 ```bash
 npm i @nestjs/mapped-types
 ```
@@ -53,7 +53,8 @@ It's possible to hash using either Argon2i, Argon2d or Argon2id (default), and v
 ```bash
 npm i argon2
 ```
-
+### Joi
+https://github.com/hapijs/joi
 ```bash
 npm i joi
 ```
@@ -65,8 +66,6 @@ npm i --save @nestjs/axios axios
 ```bash
 npm install --save @nestjs/schedule
 ```
-
-### cron
 ```bash
 npm install --save-dev @types/cron
 ```
@@ -75,8 +74,7 @@ npm install --save-dev @types/cron
 ```bash
 npm i --save @nestjs/microservices
 ```
-### Rabbitmq
-### 
+### RabbitMQ
 ```bash
 npm i --save amqplib amqp-connection-manager
 ```
