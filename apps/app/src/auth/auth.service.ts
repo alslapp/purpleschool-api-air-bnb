@@ -7,12 +7,14 @@ import { PayloadDto } from './dto/payload.dto';
 
 @Injectable()
 export class AuthService {
-	constructor(private userService: UserService, private jwtService: JwtService) {}
+	constructor(private userService: UserService, private jwtService: JwtService) { }
+
 	async signIn(payload: PayloadDto) {
 		return {
 			access_token: await this.jwtService.signAsync(payload),
 		};
 	}
+
 	async validateUser(login: string, password: string): Promise<PayloadDto> {
 		const user = await this.userService.findUserRaw(login);
 		if (!user) {
@@ -24,4 +26,5 @@ export class AuthService {
 		}
 		return { sub: user.id, email: login, roles: user.roles };
 	}
+
 }

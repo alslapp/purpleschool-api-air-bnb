@@ -25,6 +25,11 @@ npm run test
 
 ## Дабавленные пакеты
 
+### Nestjs Config
+```bash
+npm i --save @nestjs/config
+```
+
 ### MongoDb
 ```bash
 npm i @nestjs/mongoose mongoose
