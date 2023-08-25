@@ -26,16 +26,23 @@ npm run test
 
 ## Дабавленные пакеты
 
-### Nestjs packages
+## Nestjs packages
+## MongoDb
 ```bash
 npm i @nestjs/mongoose mongoose
+```
+```bash
 npm i class-validator class-transformer
+```
+```bash
 npm i @nestjs/mapped-types
 ```
 
 ### Passport JWT
 ```bash
 npm i @nestjs/jwt @nestjs/passport passport passport-jwt
+```
+```bash
 npm i -D @types/passport-jwt
 ```
 
@@ -50,22 +57,26 @@ npm i argon2
 ```bash
 npm i joi
 ```
-
+### Axios
 ```bash
 npm i --save @nestjs/axios axios
 ```
-
+### Schedule
 ```bash
 npm install --save @nestjs/schedule
 ```
+
+### cron
 ```bash
 npm install --save-dev @types/cron
 ```
 
+### NestJs Microservices
 ```bash
 npm i --save @nestjs/microservices
 ```
-
+### Rabbitmq
+### 
 ```bash
 npm i --save amqplib amqp-connection-manager
 ```
@@ -75,32 +86,37 @@ npm i --save amqplib amqp-connection-manager
 в файле .env нужно указать HTTP_PORT  
 в файле .env.prod нужно все остальные данные
 
-### Собрать на проде только Сервер
-удалить контейнер
-```bash
-docker remove -f top-api-air-bnb
-```
-собрать новый сервер
-```bash
-npm run docker:build:server
-```
-
-### Собрать приложение в docker
+### Собрать приложение и бд в docker
 ```bash
 npm run docker:build:app
 ```
 
-### Собрать только базу данных в docker
+Cобрать ТОЛЬКО приложение
+```bash
+npm run docker:build:server
+```
+
+Собрать ТОЛЬКО базу данных в docker
 ```bash
 npm run docker:build:db
 ```
 
-### Войти в консоль контейнера
+Войти в консоль контейнера
 ```bash
 docker logs -f top-api-air-bnb
 ```
 
+Пересобрать всё
+```bash
+npm run docker:rebuild:app
+```
 ### Очистить docker
+
+Удалить контейнер
+```bash
+docker remove -f top-api-air-bnb
+```
+
 #### удалить все, кроме volume:
 ```bash
 docker stop $(docker ps -a -q) && docker system prune -a
@@ -110,14 +126,15 @@ docker stop $(docker ps -a -q) && docker system prune -a
 docker volume rm $(docker volume ls -q)
 ```
 
-#### на VirtualBox не работает mongo v5+, можно поставить образ v4
+#### если на VirtualBox не работает mongo v5+, можно поставить v4
+добавить в docker-compose-db.yml
 ```bash
 image: mongo:4.4.6
 ```
 
 ### GHCR
-```bash
 файл - https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
-сначала локально на компе в консоли выполнить команду: (проверить в настройках гитхаба, чтобы токен не истек)
+сначала локально на компе в консоли выполнить команду: (проверить в настройках Github, чтобы токен не истек)
+```bash
 echo "GITHUB_TOKEN" | docker login ghcr.io -u USERNAME_GITHUB --password-stdin
 ```

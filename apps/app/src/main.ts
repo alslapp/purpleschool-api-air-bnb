@@ -27,10 +27,10 @@ async function bootstrap() {
 	await app.listen(httpPort);
 	console.log(
 		'\x1b[32m',
-		'🚀 Server started on port: ',
+		'🚀 Application is running on: ',
 		'\x1b[37m',
 		'\x1b[42m',
-		httpPort,
+		await app.getUrl(),
 		'\x1b[0m',
 	);
 }

@@ -39,6 +39,7 @@ export class BookingController {
 	testNotify(@Body() data: { date: string | number; price: number; user_name: string }) {
 		this.notifierService.sendMessage(onBookCreateTemplate, data);
 		this.notifierService.sendMessage(onBookCancelTemplate, data);
+		return { msg: 'Успешно' };
 	}
 
 	@Roles(Role.USER)
