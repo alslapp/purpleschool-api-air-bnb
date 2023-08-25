@@ -99,15 +99,16 @@ npm run docker:build:server
 npm run docker:build:db
 ```
 
+Пересобрать всё
+```bash
+npm run docker:rebuild:app
+```
+
 Войти в консоль контейнера
 ```bash
 docker logs -f top-api-air-bnb
 ```
 
-Пересобрать всё
-```bash
-npm run docker:rebuild:app
-```
 ### Очистить docker
 
 Удалить контейнер
