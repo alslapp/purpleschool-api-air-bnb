@@ -3,7 +3,7 @@ import { CreateRoomDto, UpdateRoomDto } from './dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument } from './models';
 import { Model } from 'mongoose';
-import { convertDateToUTC } from '../helpers/helpers';
+import { convertDateToUTC, PaginationParams } from '@app/common';
 import { Booking, BookingDocument } from '../booking/models';
 
 @Injectable()
@@ -18,12 +18,12 @@ export class RoomService {
 		return newRoom.save();
 	}
 
-	findAll(options: { limit?: number; skip?: number } = {}) {
+	findAll(options: PaginationParams) {
 		return this.roomModel.find({}, {}, options);
 	}
 
-	findById(id: string, select = '') {
-		return this.roomModel.findById(id).select(select);
+	findById(id: string) {
+		return this.roomModel.findById(id);
 	}
 
 	findByRoomNumber(number: number) {

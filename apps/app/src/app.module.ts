@@ -8,12 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
 import { getMongoConfig } from './configs';
 import { NotifierModule } from './notifier/notifier.module';
-import { ApiTestModule } from './api-test/api-test.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
 import { RmqModule } from '@app/common';
-import { TELEGRAM_SERVICE } from './constants';
-import { UserZodModule } from './user-zod/user-zod.module';
+import { TELEGRAM_SERVICE } from '@app/common';
 
 @Module({
 	imports: [
@@ -31,7 +29,6 @@ import { UserZodModule } from './user-zod/user-zod.module';
 			inject: [ConfigService],
 			useFactory: getMongoConfig,
 		}),
-		ApiTestModule,
 		ScheduleModule.forRoot(),
 		BookingModule,
 		RoomModule,
@@ -42,7 +39,6 @@ import { UserZodModule } from './user-zod/user-zod.module';
 		RmqModule.register({
 			name: TELEGRAM_SERVICE,
 		}),
-		UserZodModule,
 	],
 })
 export class AppModule {}

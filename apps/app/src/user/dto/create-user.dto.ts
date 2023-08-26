@@ -4,7 +4,7 @@ import {
 	ERROR_USER_VALIDATION_PASSWORD,
 	ERROR_USER_VALIDATION_PASSWORD_IS_NOT_STRING,
 } from '../user.constants';
-import { Role } from './user-roles.enum';
+import { Role } from '@app/common';
 
 export class CreateUserDto {
 	@IsEmail({}, { message: ERROR_USER_VALIDATION_EMAIL })

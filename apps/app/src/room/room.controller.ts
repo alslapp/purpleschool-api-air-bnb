@@ -14,12 +14,11 @@ import {
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto, UpdateRoomDto } from './dto';
-import { Params, Roles } from '../decorators';
-import { Role } from '../user/dto/user-roles.enum';
+import { Params, Roles, Role } from '@app/common';
 import { RolesGuard } from '../auth/gards/roles.guard';
 import { JwtAuthGuard } from '../auth/gards';
 import { ERROR_ROOM_NOT_FOUND, ERROR_ROOM_EXISTS } from './room.constants';
-import PaginationParams from '../pagination/pagination-params.dto';
+import { PaginationParams } from '@app/common';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('room')

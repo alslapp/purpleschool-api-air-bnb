@@ -14,32 +14,36 @@ import {
 import { BookingService } from './booking.service';
 import { BookingStatusesEnum, CreateBookingDto } from './dto';
 import { JwtAuthGuard } from '../auth/gards';
-import { Params, Roles, UserId } from '../decorators';
+import { Params, Roles, UserId } from '@app/common';
 import {
 	ERROR_BOOKING_CANCELLED_FORBIDDEN,
 	ERROR_BOOKING_CANCELLED_YET,
 	ERROR_BOOKING_NOT_FOUND,
 } from './booking.constants';
 import { RolesGuard } from '../auth/gards/roles.guard';
-import { Role } from '../user/dto/user-roles.enum';
-import { onBookCancelTemplate, onBookCreateTemplate } from './notify.templates';
-import { NotifierService } from '../notifier/notifier.service';
-import PaginationParams from '../pagination/pagination-params.dto';
+import { onBookCancelTemplate, onBookCreateTemplate } from './booking.notify.templates';
+import { PaginationParams } from '@app/common';
+import { Role } from '@app/common';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('booking')
 export class BookingController {
-	constructor(
-		private readonly bookingService: BookingService,
-		private readonly notifierService: NotifierService,
-	) {}
+	constructor(private readonly bookingService: BookingService) {}
 
-	// роут для теста отправки сообщений
-	@Post('notify')
-	testNotify(@Body() data: { date: string | number; price: number; user_name: string }) {
-		this.notifierService.sendMessage(onBookCreateTemplate, data);
-		this.notifierService.sendMessage(onBookCancelTemplate, data);
-		return { msg: 'Успешно' };
+	@Post('notify/:id')
+	async notify(@Params('id') bookId: string, @UserId() userId: string) {
+		try {
+			const book = await this.bookingService.findById(bookId);
+
+			if (!book) throw new Error('Бронь не найдена');
+
+			this.bookingService.sendMessage(userId, book, onBookCreateTemplate);
+			this.bookingService.sendMessage(userId, book, onBookCancelTemplate);
+
+			return { msg: 'Успешно' };
+		} catch (error) {
+			throw new BadRequestException((error as ErrorEvent).message);
+		}
 	}
 
 	@Roles(Role.USER)

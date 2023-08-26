@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { NotifierService } from './notifier.service';
 import { UserModule } from '../user/user.module';
 import { RmqModule } from '@app/common';
-import { TELEGRAM_SERVICE } from '../constants';
+import { TELEGRAM_SERVICE } from '@app/common';
 
 @Global()
 @Module({

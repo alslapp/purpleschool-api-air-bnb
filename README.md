@@ -105,6 +105,11 @@ Cобрать ТОЛЬКО приложение
 npm run docker:build:server
 ```
 
+Cобрать ТОЛЬКО мс Телеграм
+```bash
+npm run docker:build:telegram
+```
+
 Собрать ТОЛЬКО базу данных в docker
 ```bash
 npm run docker:build:db

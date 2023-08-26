@@ -12,8 +12,7 @@ import { JwtAuthGuard } from '../auth/gards';
 import { FileElementResponse } from './dto/file-response-element.response';
 import { FilesService } from './files.service';
 import { MFile } from './mfile.class';
-import { Roles } from '../decorators';
-import { Role } from '../user/dto/user-roles.enum';
+import { Roles, Role } from '@app/common';
 
 @Controller('files')
 export class FilesController {
@@ -30,11 +29,8 @@ export class FilesController {
 	): Promise<FileElementResponse[] | null> {
 		const fileNameArr = file.originalname.split('.');
 		const ext = fileNameArr.pop();
-		// const fileName = fileNameArr.join('.');
 		const buffer = file.buffer;
 		const fileNameHash = this.filesService.getHashFile(buffer).substring(0, 15);
-
-		// original file
 		const saveArray: MFile[] = [
 			new MFile({
 				originalname: `${fileNameHash}.${ext}`,
@@ -54,9 +50,7 @@ export class FilesController {
 				}),
 			);
 
-			// resize
 			if (width && width > this.widthResize) {
-				// resize original file
 				const resized = await this.filesService.resize(buffer, this.widthResize);
 				saveArray.push(
 					new MFile({
@@ -65,7 +59,6 @@ export class FilesController {
 					}),
 				);
 
-				//resize webp file
 				const webpResized = await this.filesService.resize(webp, this.widthResize);
 				saveArray.push(
 					new MFile({

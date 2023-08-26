@@ -1,0 +1,12 @@
+services:
+
+  top-api-air-bnb-telegram:
+    build:
+      context: .
+      dockerfile: ./apps/telegram/Dockerfile
+    image: top-api-air-bnb-telegram:latest
+    container_name: top-api-air-bnb-telegram
+    restart: always
+    env_file:
+      - ./apps/telegram/.env
+      - ./apps/telegram/.env.prod

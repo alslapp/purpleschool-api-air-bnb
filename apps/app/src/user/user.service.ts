@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { UpdateUserDto } from './dto';
 import { User, UserDocument } from './models';
 import * as argon from 'argon2';
-import { Role } from './dto/user-roles.enum';
+import { Role } from '@app/common';
 
 @Injectable()
 export class UserService {

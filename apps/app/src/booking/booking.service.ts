@@ -10,7 +10,9 @@ import { TNotifyTemplate } from '../notifier/notify.types';
 import { ERROR_USER_NOT_FOUND } from '../user/user.constants';
 import { UserService } from '../user/user.service';
 import { NotifierService } from '../notifier/notifier.service';
-import { convertDateToUTC } from '../helpers/helpers';
+import { convertDateToUTC, PaginationParams } from '@app/common';
+import { TNotifyBookingTemplate } from './booking.notify.templates';
+import { format } from 'date-fns';
 
 @Injectable()
 export class BookingService {
@@ -22,7 +24,7 @@ export class BookingService {
 	) {}
 
 	async create(userId: string, dto: CreateBookingDto) {
-		const roomFind = await this.roomService.findById(dto.roomId, 'price');
+		const roomFind = await this.roomService.findById(dto.roomId);
 		if (!roomFind) {
 			throw new Error(ERROR_ROOM_NOT_FOUND);
 		}
@@ -55,7 +57,7 @@ export class BookingService {
 		return await bookNew.save();
 	}
 
-	findAll(options: { limit?: number; skip?: number } = {}) {
+	findAll(options: PaginationParams) {
 		return this.bookingModel.find({}, {}, options);
 	}
 
@@ -72,26 +74,22 @@ export class BookingService {
 	}
 
 	async sendMessage(userId: string, book: BookingDocument, template: TNotifyTemplate) {
-		const user = await this.userService.findById(userId, 'name phone');
+		const user = await this.userService.findById(userId);
 		if (!user) {
 			throw new Error(ERROR_USER_NOT_FOUND);
 		}
 
-		const room = await this.roomService.findById(book.roomId.toString(), 'number');
+		const room = await this.roomService.findById(book.roomId.toString());
 		if (!room) {
 			throw new Error(ERROR_ROOM_NOT_FOUND);
 		}
 
-		// в методе notifierService.getTemplateData не разобрался, какой тип указать для data
-		// указал any
-		const userData = this.notifierService.getTemplateData(user, 'user');
-		const roomData = this.notifierService.getTemplateData(room, 'room');
-
-		// мне кажется, тут что то не правильно написано
-		this.notifierService.sendMessage(template, {
-			...book.toObject(),
-			...userData,
-			...roomData,
+		this.notifierService.sendMessage<TNotifyBookingTemplate>(template, {
+			book_date: format(new Date(book.date * 1000), 'dd.MM.yyyy'),
+			book_price: book.price,
+			room_number: room.number,
+			user_name: user.name ?? ' - ',
+			user_phone: user.phone ?? ' - ',
 		});
 	}
 }

@@ -14,9 +14,7 @@ import { UpdateUserDto } from './dto';
 import { ERROR_USER_FORBIDDEN, ERROR_USER_NOT_FOUND } from './user.constants';
 import { JwtAuthGuard } from '../auth/gards';
 import { RolesGuard } from '../auth/gards/roles.guard';
-import { Params, Roles, UserId } from '../decorators';
-import { Role } from './dto/user-roles.enum';
-import PaginationParams from '../pagination/pagination-params.dto';
+import { PaginationParams, Params, Role, Roles, UserId } from '@app/common';
 
 @Controller('user')
 export class UserController {

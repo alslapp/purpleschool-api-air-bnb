@@ -38,8 +38,8 @@ export class FilesService {
 		return hashSum.digest('hex');
 	}
 
-	async getMetadata(file: Buffer): Promise<sharp.Metadata> {
-		const image = await sharp(file.buffer);
-		return await image.metadata();
+	getMetadata(file: Buffer): Promise<sharp.Metadata> {
+		const image = sharp(file.buffer);
+		return image.metadata();
 	}
 }
