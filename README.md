@@ -63,6 +63,12 @@ https://github.com/hapijs/joi
 ```bash
 npm i joi
 ```
+
+### nestjs zod
+```bash
+npm i nestjs-zod
+```
+
 ### Axios
 ```bash
 npm i --save @nestjs/axios axios
