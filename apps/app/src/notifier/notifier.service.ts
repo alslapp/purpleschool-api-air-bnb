@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { TNotifyTemplate, NotifyProviders } from './notify.types';
+import { TNotifyTemplate } from './notify.types';
 import { TELEGRAM_SERVICE } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { NotifyProviders } from './notify-providers';
 
 @Injectable()
 export class NotifierService {

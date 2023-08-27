@@ -11,8 +11,8 @@ import { ERROR_USER_NOT_FOUND } from '../user/user.constants';
 import { UserService } from '../user/user.service';
 import { NotifierService } from '../notifier/notifier.service';
 import { convertDateToUTC, PaginationParams } from '@app/common';
-import { TNotifyBookingTemplate } from './booking.notify.templates';
 import { format } from 'date-fns';
+import { INotifyBookingTemplate } from './booking.notify.templates';
 
 @Injectable()
 export class BookingService {
@@ -84,7 +84,7 @@ export class BookingService {
 			throw new Error(ERROR_ROOM_NOT_FOUND);
 		}
 
-		this.notifierService.sendMessage<TNotifyBookingTemplate>(template, {
+		this.notifierService.sendMessage<INotifyBookingTemplate>(template, {
 			book_date: format(new Date(book.date * 1000), 'dd.MM.yyyy'),
 			book_price: book.price,
 			room_number: room.number,

@@ -12,6 +12,13 @@ import { TNotifyTemplate } from '../../notifier/notify.types';
 // 	`📞 Телефон гостя: {user_phone}`,
 // ];
 
+export class TestTemplate {
+	constructor(public testVar: string) {}
+	public getT() {
+		return this.testVar;
+	}
+}
+
 export const onBookCancelTemplate: TNotifyTemplate = {
 	telegram: [
 		'Бронь комнаты отменена!',

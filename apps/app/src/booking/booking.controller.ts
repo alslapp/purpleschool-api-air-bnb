@@ -31,15 +31,16 @@ export class BookingController {
 	constructor(private readonly bookingService: BookingService) {}
 
 	@Post('notify/:id')
-	async notify(@Params('id') bookId: string, @UserId() userId: string) {
+	async testNotifyByBookId(@Params('id') bookId: string, @UserId() userId: string) {
 		try {
 			const book = await this.bookingService.findById(bookId);
 
-			if (!book) throw new Error('Бронь не найдена');
+			if (!book) {
+				throw new Error('Бронь не найдена');
+			}
 
 			this.bookingService.sendMessage(userId, book, onBookCreateTemplate);
 			this.bookingService.sendMessage(userId, book, onBookCancelTemplate);
-
 			return { msg: 'Успешно' };
 		} catch (error) {
 			throw new BadRequestException((error as ErrorEvent).message);

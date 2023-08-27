@@ -1,3 +1,4 @@
-export const NotifyProviders = ['telegram', 'email', 'sms'];
+import { NotifyProviders } from './notify-providers';
+
 export type TNotifyProvider = (typeof NotifyProviders)[number];
 export type TNotifyTemplate = Record<TNotifyProvider, string[]>;
