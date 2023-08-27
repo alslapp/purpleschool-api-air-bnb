@@ -12,6 +12,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
 import { RmqModule } from '@app/common';
 import { TELEGRAM_SERVICE } from '@app/common';
+import { ApiTestModule } from './api-test/api-test.module';
 
 @Module({
 	imports: [
@@ -39,6 +40,7 @@ import { TELEGRAM_SERVICE } from '@app/common';
 		RmqModule.register({
 			name: TELEGRAM_SERVICE,
 		}),
+		ApiTestModule,
 	],
 })
 export class AppModule {}
