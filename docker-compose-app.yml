@@ -1,0 +1,17 @@
+services:
+
+  top-api-air-bnb-app:
+    build:
+      context: .
+      dockerfile: ./apps/app/Dockerfile
+    image: top-api-air-bnb-app:latest
+    # image: ghcr.io/alslapp/purpleschool-api-air-bnb:main
+    container_name: top-api-air-bnb
+    restart: always
+    env_file:
+      - ./apps/app/.env
+      - ./apps/app/.env.prod
+    ports:
+      - 3338:3338
+    volumes:
+      - ./.volumes/uploads:/opt/app/uploads/

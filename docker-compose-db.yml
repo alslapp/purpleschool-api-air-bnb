@@ -1,0 +1,10 @@
+services:
+
+  mongo-topapi-air-bnb:
+    image: mongo
+    container_name: mongo-topapi-air-bnb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./.volumes/mongo:/data/db

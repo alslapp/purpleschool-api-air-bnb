@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/.volumes
 
 # Logs
 logs
@@ -37,6 +38,4 @@ lerna-debug.log*
 # ENV files
 .env
 .env.*
-
-/.mongo
-/uploads
+!.env.example*

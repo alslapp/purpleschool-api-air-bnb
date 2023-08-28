@@ -1,0 +1,11 @@
+services:
+
+  top-api-air-bnb-app:
+    depends_on:
+      - mongo-topapi-air-bnb
+      - rabbitmq
+
+  top-api-air-bnb-telegram:
+    depends_on:
+      - mongo-topapi-air-bnb
+      - rabbitmq
